@@ -66,7 +66,7 @@ ClusterChart.prototype.update = function(){
         height = self.svgHeight,
         padding = 5, // separation between same-color circles
         clusterPadding = 8, // separation between different-color circles
-        maxRadius = 70;
+        maxRadius = 60;
 
     var colorScale = d3.scaleOrdinal(d3.schemeCategory20);
 
@@ -80,6 +80,13 @@ ClusterChart.prototype.update = function(){
             return +d["Average Annual Openings"];
         }))])
         .range([5, maxRadius]);
+
+    var wageColorScale = d3.scaleQuantile()
+        .domain([0,20000, 40000, 60000, 80000, 100000])
+            //d3.max(filteredoccdata,(function(d,i) {
+            //return +d["A_MEDIAN"];
+        //}))])
+        .range(['#f1eef6','#d7b5d8','#df65b0','#dd1c77','#980043']);
 
     var clusterarray = []
     filteredoccdata.map(function (d){
@@ -108,7 +115,8 @@ ClusterChart.prototype.update = function(){
     var nodes = filteredoccdata.map(function(d, i){
       var  ii = +d.MajorGroupIndex,
         r = radiusScale(+d["Average Annual Openings"]),
-        x = width/2; /*function (d,i) {
+        x = width/2;
+          /*function (d,i) {
             if ((d.ii + 1) <= (m / 3)) {
                 return ((d.ii + 1) * (width / (m / 3))) - ((width / (m / 3)) / 2);
             }
@@ -118,15 +126,15 @@ ClusterChart.prototype.update = function(){
                 return (((d.ii + 1) - (m * (2 / 3))) * (width / (m / 3))) - ((width / (m / 3)) / 2);
         };*/
         //Math.cos((ii+1) / m * 2 * Math.PI) * 200 + width / 2 + Math.random();
-        y = height/2; /*function (d, i) {
+        y = height/2;/*function (d, i) {
             if ((d.ii + 1) <= (m/3)) {
                 return 100;
             }
             if (((d.ii + 1) > (m / 3)) && ((d.ii + 1) <= (m * (2 / 3)))) {
-                return 250;
+                return 3000;
             }
-                return 400;
-            };*/
+                return 500;
+            },*/
         //Math.sin((ii+1) / m * 2 * Math.PI) * 200    + height / 2 + Math.random();
         AREA = d.AREA,
         STATE = d.STATE,
@@ -192,16 +200,17 @@ ClusterChart.prototype.update = function(){
         })*/
             .strength(.1))
         .force("y", d3.forceY(function (d, i) {
-            if ((d.ii + 1) <= (m/3)) {
-                return 100;
+           if ((d.ii + 1) <= (m/3)) {
+                return 100;//(((100000/d.A_MEDIAN)*100));
             }
             if (((d.ii + 1) > (m / 3)) && ((d.ii + 1) <= (m * (2 / 3)))) {
-                return 300;
+                return 300;//(((100000/d.A_MEDIAN)*100));
             }
-            return 500;
+            return 500;//((100000/d.A_MEDIAN)*100);
         })
         .strength(.1))
         .force("collide", d3.forceCollide().radius(function(d) { return d.r + 1; }).iterations(2).strength(.7))
+        //.force("manybody", d3.forceManyBody().strength(function(d) {return (((d.A_MEDIAN/+1)/200000)*-3)}))
         .force("cluster", d3ForceCluster.forceCluster()
             .strength(100)
             .centerInertia(1)

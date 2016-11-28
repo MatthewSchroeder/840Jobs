@@ -4,17 +4,28 @@
 
     function init() {
 
+       //var clusterChart = new ClusterChart();
+       //var distChart = new DistChart();
 
-        //var rankChart = new RankChart();
 
-        //var stateChart = new StateChart();
 
         //var infoPanel = new InfoPanel();
 
-        d3.csv("occdata.csv", function (error, occdata) {
-            var clusterChart = new ClusterChart(occdata);
-            console.log(occdata);
-            clusterChart.update(occdata);
+        d3.csv("occdata_all.csv", function (error, occdata) {
+            var clusterSelection = "Education",
+                stateSelection = "United States",
+                minWage = 0,
+                maxWage = 200000
+                minOpenings = 0,
+                maxOpenings = 200000;
+           //    var clusterChart = new ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings);
+            var distChart = new DistChart(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, clusterChart, demandChart);
+            var demandChart = new DemandChart(occdata, clusterSelection, stateSelection, minWage, maxWage, clusterChart, distChart);
+            var clusterChart = new ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
+            distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, clusterChart, demandChart);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, clusterChart, distChart);
+            clusterChart.update(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
+
         });
 
     }

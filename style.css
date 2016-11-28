@@ -15,17 +15,57 @@ h1 {
 .info{
     margin-left: 20px;
 }
+.circles {
+    stroke: slategrey;
+    stroke-width: 1;
+}
+
+.highlight {
+    stroke: #2c3e50;
+    stroke-width: 1.5;
+    fill-opacity:0.4;
+}
+
+.noHighlight {
+    stroke: slategrey;
+    stroke-width: 1;
+
+}
+
+.clusterLabels, .brushtext{
+    text-anchor:middle;
+    font-size: 14px;
+    fill: #565656;
+    stroke-width: 0.1px;
+    background: #FFFFFF;
+    color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    /*stroke: #e5e5e5;*/
+}
+.medianLabel {
+    text-anchor: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.8);
+    /*stroke: #e5e5e5;*/
+}
+.wageLabel {
+    text-anchor:middle;
+    font-size: 40px;
+    fill: #e74c3c;
+    /*stroke: #e5e5e5;*/
+}
 .tile {
     stroke: #FFF;
     stroke-width: 4;
 }
-
-.yeartext, .brushtext{
-    text-anchor:middle;
-    font-size: 24px;
-    fill: #565656;
-    stroke-width: 0.1px;
-    /*stroke: #e5e5e5;*/
+.bar {
+    fill: #27ae60;
+    stroke: #FFF;
+    stroke-width: .5;
+}
+.wageBar {
+    stroke: #e74c3c;
+    stroke-width: 3;
 }
 .tilestext {
     text-anchor:middle;
@@ -33,6 +73,37 @@ h1 {
     fill: #565656;
     stroke-width: 0.1px;
     /*stroke: #e5e5e5;*/
+}
+#topContainer {
+    width:100%;
+    height: 700px;
+    display:inline-block;
+}
+#clusterChart {
+    float: left;
+    width: 70%;
+    height: 700px;
+}
+#filterTable {
+    float: right;
+    width: 30%;
+    height: 700px;
+}
+#distChart {
+    float: left;
+    width: 100%;
+}
+#demandChart {
+    float: right;
+    width: 100%;
+ }
+#stateSelect {
+    margin: 5px;
+    width: 15%;
+}
+#clusterSelect {
+    margin: 5px;
+    width: 15%;
 }
 
 .electoralVotesNote, .votesPercentageNote{
@@ -73,9 +144,18 @@ h1 {
     stroke: #eee;
 }
 
-.fullView{
-    display: inline-block;
-    width: 100%;
+.cChart{
+   display:block;
+}
+.dChart{
+    width:320px;
+    display:table-cell;
+
+}
+.demandChart{
+    width:320px;
+    display:table-cell;
+
 }
 
 .yearChart{
@@ -131,7 +211,8 @@ h2{
     /*line-height: 5;*/
     padding-left: 10px;
     padding-right: 10px;
-    min-width: 400px;
+    max-width: 300px;
+    min-height: 40px;
     border-style: groove;
     /*padding: 12px;*/
     background: #FFFFFF;
@@ -140,8 +221,8 @@ h2{
     pointer-events: none;
 }
 .tooltip-title{
-    font-size:18px;
-    font-family: "Arial Black";
+    font-size:16px;
+    font-family: Lato;
 
 }
 
@@ -193,7 +274,35 @@ h2{
 
 h3{
     text-anchor:middle;
-    font-size: 32px;
+    font-size: 16px;
+    width: 15%;
+    margin: 5px;
+}
+#selectLabels {
+    text-anchor:middle;
+    font-size: 16px;
+    width: 15%;
+    margin: 5px;
+    margin-left: 120px;
+}
+/* bootstrap 3 helpers */
+
+.navbar-form input, .form-inline input {
+    width:auto;
+}
+
+header {
+    height:280px;
+    background-color:#eee;
+}
+
+.affix {
+    top: 0;
+    width: 100%;
+}
+
+.affix + .container-fluid {
+    padding-top: 70px;
 }
 
 

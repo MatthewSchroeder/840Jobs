@@ -1,26 +1,193 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 
+<header class="masthead">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1><a href="#" title="scroll down for your viewing pleasure">Bootstrap 3 Template</a><p class="lead">Top Header and Sticky Navbar</p></h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="pull-right hidden-sm">
+                    <h1><a href="#"><i class="glyphicon glyphicon-user"></i> <i class="glyphicon glyphicon-chevron-down"></i></a></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<!-- Begin Navbar -->
+<div id="nav">
+    <div class="navbar navbar-inverse" data-spy="affix" data-offset-top="197">
+        <div class="container">
+            <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+            <a href="#" class="navbar-brand">Brand</a>
+            <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="glyphicon glyphicon-bar"></span>
+                <span class="glyphicon glyphicon-bar"></span>
+                <span class="glyphicon glyphicon-bar"></span>
+            </a>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">Link</a></li>
+                    <li><a href="#">Link</a></li>
+                </ul>
+                <ul class="nav pull-right navbar-nav">
+                    <li>
+                        <form class="navbar-form">
+                            <input type="text" class="form-control" placeholder="Search">
+                            <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
+                        </form>
+                    </li>
+                    <li>
+                        <a href="#"><span class="badge">2</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div><!-- /.navbar -->
+</div>
+
+<nav class="navbar navbar-default navbar-static-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Brand</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">One more separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Link</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
 <head>
     <meta charset="UTF-8">
     <title>840 Jobs</title>
     <link rel="stylesheet" href="style.css"/>
     <!--<script src="//d3js.org/d3.v3.min.js"></script>-->
-   <script src="//d3js.org/d3.v4.min.js">"></script>
-    <script src="https://wzrd.in/standalone/d3-force-cluster@latest"></script>
+   <script src="//d3js.org/d3.v4.js">"></script>
+    <script src="d3-tip.js"></script>
+    <!-- <script src="https://wzrd.in/standalone/d3-force-cluster@latest"></script>-->
+   <script src="https://unpkg.com/d3-force-cluster@latest"></script>
+   <script src="https://unpkg.com/d3-force-attract@latest"></script>
+    <link href="https://fonts.googleapis.com/css?family=Arvo" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
-<body>
+<body style="padding-top:70px;">
 
-<h1>840 Jobs</h1>
-<p class="info">Name: Matt Schroeder; E-Mail: matthew.schroeder@utah.edu; UID: 0202874</p>
-<div id="clusterChart" class="view">
+<!--<h1>840 Jobs</h1>-->
+<!--<p class="info">Name: Matt Schroeder; E-Mail: matthew.schroeder@utah.edu; UID: 0202874</p>-->
+
+
+<div id = "topContainer">
+    <b id="selectLabels">Select a State: </b>
+    <select id="stateSelect">
+        <option value="United States"  selected="selected">United States</option>
+        <option value="Alabama">Alabama</option>
+        <option value="Alaska">Alaska</option>
+        <option value="Arizona">Arizona</option>
+        <option value="Arkansas">Arkansas</option>
+    </select>
+    <b id="selectLabels">Change Clusters: </b>
+    <select id="clusterSelect">
+        <option value="All">All Occupations</option>
+        <option value="MajorGroup">Major Occupational Group</option>
+        <option value="Education" selected="selected">Required Education</option>
+        <option value="STEM">Stem vs Non-STEM</option>
+        <option value="Training">Job Training</option>
+        <option value="Experience">Work Experience</option>
+    </select>
+    <div id="clusterChart" >
+    </div>
+
+    <div id = "filterTable" style="display: table">
+
+        <h1>Wages</h1>
+        <div id = "distChart">
+        </div>
+
+        <h1>Demand</h1>
+        <div id = "demandChart">
+        </div>
+
+        <div id = "growthChart">
+        </div>
+    </div>
 </div>
 
 
 
-<div id = "rankChart" class = "view">
-</div>
+
+
+
+
+<!--<div style="display:table;">
+    <div style="display: table-row">
+        <div id="clusterChart" >
+        </div>
+        <div style="display:table;">
+            <div style="display: table-row">
+                <div id = "distChart">
+                </div>
+            </div>
+            <div style="display: table-row">
+                <div id = "demandChart">
+                </div>
+            </div>
+            <div style="display: table-row">
+                <div id = "growthChart">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
 
 <div id = "stateChart" class = "view">
 </div>
@@ -31,8 +198,9 @@
 
 
 <script type="application/javascript" src="clusterChart.js"></script>
-<!--<script type="application/javascript" src="rankChart.js"></script>
-<script type="application/javascript" src="stateChart.js"></script>
+<script type="application/javascript" src="distChart.js"></script>
+<script type="application/javascript" src="demandChart.js"></script>
+<!--<script type="application/javascript" src="stateChart.js"></script>
 <script type="application/javascript" src="infoPanel.js"></script>-->
 <script type="application/javascript" src="main.js"></script>
 </body>

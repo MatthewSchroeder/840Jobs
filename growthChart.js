@@ -1,27 +1,27 @@
 ﻿
-function DemandChart(occdata, clusterSelection, stateSelection, clusterChart, distChart, growthChart) {
+function GrowthChart(occdata, clusterSelection, stateSelection, clusterChart, distChart, demandChart) {
     var self = this;
 
     self.occdata = occdata;
     self.clusterChart = clusterChart;
     self.distChart = distChart;
-    self.growthChart = growthChart;
+    self.demandChart = demandChart;
     self.init();
 };
 
 
-DemandChart.prototype.init = function(){
+GrowthChart.prototype.init = function(){
 
     var self = this;
     self.margin = {top: 10, right: 0, bottom: 30, left: 0};
-    var divdemandChart = d3.select("#demandChart").classed("oChart", true);
+    var divgrowthChart = d3.select("#growthChart").classed("gChart", true);
 
-    self.svgBounds = divdemandChart.node().getBoundingClientRect();
+    self.svgBounds = divgrowthChart.node().getBoundingClientRect();
     self.svgWidth = 300;//self.svgBounds.width - self.margin.left - self.margin.right);
     self.svgHeight = 170;
 
 
-    self.svg = d3.select('#demandChart').append("svg")
+    self.svg = d3.select('#growthChart').append("svg")
         .attr("width",self.svgWidth)
         .attr("height",self.svgHeight);
         //.attr(("x", (self.svgBounds.width - self.margin.left - self.margin.right)-self.svgWidth));
@@ -41,7 +41,7 @@ DemandChart.prototype.init = function(){
     }
 }**/
 
-DemandChart.prototype.occbars_render = function(hoverData){
+GrowthChart.prototype.occbars_render = function(hoverData){
     var self = this;
     var margin = {top: 50, right: 0, bottom: 10, left: 30};
     var width = self.svgWidth - 50,
@@ -53,23 +53,23 @@ self.svg
         "translate(" + margin.left + "," + margin.top + ")")
     .append('rect')
         .attr("class", "wageBar")
-        .attr('x', hoverData >= (d3.max(self.data)/10) ? self.xw(d3.max(self.data)/10) : self.xw(hoverData))
+        .attr('x', hoverData >= (d3.max(self.data)/4) ? self.xw(d3.max(self.data)/4) : self.xw(hoverData))
         .attr('y', -110)
         .attr('width', 3)
         .attr('fill', 'black')
         .attr('height', 110)
         .attr("transform", "translate(0," + maxBarHeight + ")");
 
-    d3.select('.demandChart').append('text')
+    d3.select('.growthChart').append('text')
         .attr("class", "wageLabel")
-        .attr('x', self.xw((d3.max(self.data)/10)*(2/3)))
+        .attr('x', self.xw(.2))
         .attr('y', -50)
         .attr('dy', 0)
-        .text(d3.format(",.0f")(hoverData))
+        .text(d3.format(".1%")(hoverData))
         .attr("transform", "translate(0," + maxBarHeight + ")");
 }
 
-DemandChart.prototype.occbars_out = function(){
+GrowthChart.prototype.occbars_out = function(){
     var self = this;
 
     d3.select('.wageBar').remove();
@@ -78,7 +78,7 @@ DemandChart.prototype.occbars_out = function(){
 }
 
 
-DemandChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, clusterChart, distChart, growthChart) {
+GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, clusterChart, distChart, demandChart) {
     var self = this;
     var margin = {top: 50, right: 0, bottom: 10, left: 30};
     //console.log(stateSelection);
@@ -98,32 +98,32 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
 
     self.data = [];
     filteredoccdata.map(function (d) {
-        self.data.push(+d["Average Annual Openings"]);
+        self.data.push(+d["Percent Change"]/100);
     });
     //console.log(self.data);
 
-    var formatCount = d3.format(",.0f");
+    var formatCount = d3.format("%");
 
     // append a 'group' element to 'svg'
     // moves the 'group' element to the top left margin
 
     var group = self.svg.append("g")
-        .attr("class", 'demandChart')
+        .attr("class", 'growthChart')
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
     // set the ranges
     self.xw = d3.scaleLinear()
-        .domain([0,(d3.max(self.data)/10)])
+        .domain([0,0.40])
         .rangeRound([0, width]);
 
    // console.log(d3.max(self.data));
 
     var xwReverse = d3.scaleLinear()
         .domain([0, width])
-        .rangeRound([0, (d3.max(self.data)/10)]);
+        .rangeRound([0, 0.40]);
 
-    var thresholds = d3.range(0, d3.max(self.data)/10, (d3.max(self.data)/10)/((d3.max(self.data)/10) > 200 ? 20:((d3.max(self.data)/10) > 100 ? 10:5)));
+    var thresholds = d3.range(0, 0.40, (0.40/ 20));
     //console.log(thresholds);
     // group the data for the bars
     var bins = d3.histogram()
@@ -144,7 +144,7 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         .filter(function (d) {
             return ((d["STATE"] == "" + stateSelection + "") && (d["OCC_GROUP"] == "total"));
         });
-    var avgAnnOpenings = d3.median(self.data);//totalData[0]["Average Annual Openings"]/data.length;
+    var medianGrowthRate = d3.median(self.data);//totalData[0]["Average Annual Openings"]/data.length;
 
     //console.log(totalData[0]["Average Annual Openings"]);
     //console.log(self.data.length);
@@ -188,7 +188,7 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
 
     var medianBar = group.append('rect')
         .attr("class", "medianBar")
-        .attr('x', self.xw(avgAnnOpenings))
+        .attr('x', self.xw(medianGrowthRate))
         .attr('y', -110)
         .attr('width', 3)
         .attr('fill', 'black')
@@ -197,10 +197,10 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
 
     var medianLabel = group.append('text')
         .attr("class", "medianLabel")
-        .attr('x', self.xw(avgAnnOpenings))
+        .attr('x', self.xw(medianGrowthRate))
         .attr('y', -130)
         .attr('dy', 0)
-        .text("Median " + d3.format(",.0f")(avgAnnOpenings))
+        .text("Median " + d3.format(".1%")(medianGrowthRate))
         .attr("transform", "translate(0," + maxBarHeight + ")")
         .call(wrap,50);
 
@@ -247,15 +247,15 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         var s = d3.event.selection;
        // console.log(xwReverse(s[0])-1800);
        // console.log(xwReverse(s[1])-1800);
-        var minOpenings = self.xw.invert(s[0]-30),//-1800,
-            maxOpenings = self.xw.invert(s[1]-30) >= (d3.max(self.data)/10) ? 200000 : self.xw.invert(s[1]-30);
+        var minGrowth = self.xw.invert(s[0]-30),//-1800,
+            maxGrowth = self.xw.invert(s[1]-30) >= 0.40 ? 500 : self.xw.invert(s[1]-30);
 
-        console.log(minOpenings);
-        console.log(maxOpenings);
+        console.log(minGrowth);
+        console.log(maxGrowth);
 
-        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, self, growthChart)
-        distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart)
-        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, clusterChart, distChart, self)
+        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, self)
+        distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, self)
+        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, clusterChart, distChart, self)
     }
 
 
@@ -268,13 +268,13 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
 
     // add the x Axis
 
-    d3.selectAll('.demandAxis').remove();
+    d3.selectAll('.growthAxis').remove();
 
     var xAxis = group.append("g")
-        .attr('class', "demandAxis")
+        .attr('class', "growthAxis")
         .attr("transform", "translate(0," + maxBarHeight + ")")
         .call(d3.axisBottom(self.xw).ticks(5).tickFormat(function(d) {
-            return d3.format(",.0f")(d);
+            return d3.format(".1%")(d);
         }));
 
 

@@ -17,14 +17,18 @@
                 minWage = 0,
                 maxWage = 200000
                 minOpenings = 0,
-                maxOpenings = 200000;
+                maxOpenings = 200000
+                minGrowth = 0,
+                maxGrowth = 500;
            //    var clusterChart = new ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings);
-            var distChart = new DistChart(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, clusterChart, demandChart);
-            var demandChart = new DemandChart(occdata, clusterSelection, stateSelection, minWage, maxWage, clusterChart, distChart);
-            var clusterChart = new ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
-            distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, clusterChart, demandChart);
-            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, clusterChart, distChart);
-            clusterChart.update(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
+            var distChart = new DistChart(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, growthChart);
+            var demandChart = new DemandChart(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, clusterChart, distChart, growthChart);
+            var growthChart = new GrowthChart(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, clusterChart, distChart, demandChart);
+            var clusterChart = new ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);
+            distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, growthChart);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, clusterChart, distChart, growthChart);
+            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, clusterChart, distChart, demandChart);
+            clusterChart.update(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);
 
         });
 

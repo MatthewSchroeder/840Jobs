@@ -1,10 +1,11 @@
 ﻿
-function ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart) {
+function ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart, growthChart) {
     var self = this;
 
     self.occdata = occdata;
     self.distChart = distChart;
     self.demandChart = demandChart;
+    self.growthChart = growthChart;
     self.init();
 };
 
@@ -54,12 +55,12 @@ ClusterChart.prototype.tooltip_render = function(tooltip_data) {
 
 
 
-ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart){
+ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart){
     var self = this;
 
     var filteredoccdata = occdata
         .filter(function(d) {
-            return ((d["STATE"] == "" + stateSelection + "") && (d["OCC_GROUP"] == "detailed") && (d["A_MEDIAN"] >= minWage ) && (d["A_MEDIAN"] <= maxWage )&& (d["Average Annual Openings"] >= minOpenings ) && (d["Average Annual Openings"] <= maxOpenings ));
+            return ((d["STATE"] == "" + stateSelection + "") && (d["OCC_GROUP"] == "detailed") && (d["A_MEDIAN"] >= minWage ) && (d["A_MEDIAN"] <= maxWage )&& (d["Average Annual Openings"] >= minOpenings ) && (d["Average Annual Openings"] <= maxOpenings ) && (d["Percent Change"]/100 >= minGrowth ) && (d["Percent Change"]/100 <= maxGrowth ));
         });
 
     var statefilteredoccdata = occdata
@@ -270,7 +271,8 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             STEM = filteredoccdata[i].STEM,
             STEM_INDEX = filteredoccdata[i].STEMIndex
             ALL = filteredoccdata[i].AllOccupations,
-            ALL_INDEX = filteredoccdata[i].AllIndex
+            ALL_INDEX = filteredoccdata[i].AllIndex,
+            PERCENT_CHANGE = +filteredoccdata[i]["Percent Change"]
             ;
 
             d = {
@@ -304,6 +306,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
                 ALL_INDEX:ALL_INDEX,
                 JOB_DESCR:JOB_DESCR,
                 CLUSTER_NODE:CLUSTER_NODE,
+                PERCENT_CHANGE:PERCENT_CHANGE,
                 x: x,
                 y: y
             };
@@ -432,18 +435,21 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             })
             .attr("opacity", 0)
         .on('mouseover', function(d){
-            var medianWage = +d.A_MEDIAN
-                avgOpenings = +d.AVG_ANN_OPENINGS;
+            var medianWage = +d.A_MEDIAN,
+                avgOpenings = +d.AVG_ANN_OPENINGS,
+                medianGrowthRate = +d.PERCENT_CHANGE/100;
 
-            self.distChart.occbars_render(medianWage);
-            self.demandChart.occbars_render(avgOpenings);
+            distChart.occbars_render(medianWage);
+            demandChart.occbars_render(avgOpenings);
+            growthChart.occbars_render(medianGrowthRate);
             tip.show(d);
             //wage_render
         })
         //.on('mouseover', tip.show)
         .on('mouseout', function(d){
-            self.distChart.occbars_out();
-            self.demandChart.occbars_out();
+            distChart.occbars_out();
+            demandChart.occbars_out();
+            growthChart.occbars_out();
             tip.hide(d);
         })
         .on('click', function(){
@@ -838,18 +844,20 @@ circles.transition()
         .on('change', function() {
             simulation.stop();
             var clusterSelection = d3.select(this).property('value');
-            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
-            self.distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, self, demandChart);
-            self.demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, self, distChart);
+            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);
+            distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, self, distChart, growthChart);
+            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
         });
 
     d3.select('#stateSelect')
         .on('change', function() {
             simulation.stop();
             var stateSelection = d3.select(this).property('value');
-            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
-            self.distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, self, demandChart);
-            self.demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, self, distChart);
+            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);
+            distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, self, distChart, growthChart);
+            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
         });
 };
 

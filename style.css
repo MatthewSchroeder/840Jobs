@@ -6,7 +6,7 @@ body {
 
 h1 {
     font-family: "Arvo";
-    font-size:35px;
+    font-size:65px;
     color: #464646;
     margin: 0px;
     padding: 0px;
@@ -97,13 +97,17 @@ h1 {
     float: right;
     width: 100%;
  }
-#stateSelect {
-    margin: 5px;
-    width: 15%;
+#growthChart {
+    float: right;
+    width: 100%;
 }
-#clusterSelect {
-    margin: 5px;
-    width: 15%;
+.stateSelect {
+    margin-right: 20px;
+
+}
+.clusterSelect {
+    margin-right: 20px;
+
 }
 
 .electoralVotesNote, .votesPercentageNote{
@@ -150,6 +154,9 @@ h1 {
 .dChart{
     width:320px;
     display:table-cell;
+
+}
+.gChart{
 
 }
 .demandChart{
@@ -279,11 +286,9 @@ h3{
     margin: 5px;
 }
 #selectLabels {
-    text-anchor:middle;
+    margin-left: 30px;
     font-size: 16px;
-    width: 15%;
-    margin: 5px;
-    margin-left: 120px;
+    color: #eee;
 }
 /* bootstrap 3 helpers */
 
@@ -294,6 +299,15 @@ h3{
 header {
     height:280px;
     background-color:#eee;
+}
+.lead {
+    margin-left: 20px;
+    font-size: 32px;
+}
+.masthead {
+    background-image: url("banner-job.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
 }
 
 .affix {

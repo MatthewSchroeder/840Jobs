@@ -1,10 +1,11 @@
 ﻿
-function DistChart(occdata, clusterSelection, stateSelection, clusterChart, demandChart) {
+function DistChart(occdata, clusterSelection, stateSelection, clusterChart, demandChart, growthChart) {
     var self = this;
 
     self.occdata = occdata;
     self.clusterChart = clusterChart;
     self.demandChart = demandChart;
+    self.growthChart = growthChart;
     self.init();
 };
 
@@ -17,7 +18,7 @@ DistChart.prototype.init = function(){
 
     self.svgBounds = divdistChart.node().getBoundingClientRect();
     self.svgWidth = 300;//self.svgBounds.width - self.margin.left - self.margin.right);
-    self.svgHeight = 200;
+    self.svgHeight = 170;
 
 
     self.svg = d3.select('#distChart').append("svg")
@@ -82,7 +83,7 @@ DistChart.prototype.occbars_out = function(){
 }
 
 
-DistChart.prototype.update = function(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, clusterChart, demandChart) {
+DistChart.prototype.update = function(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart) {
     var self = this;
     var margin = {top: 50, right: 0, bottom: 10, left: 30};
    // console.log(stateSelection);
@@ -248,8 +249,9 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
       console.log(minWage);
       console.log(maxWage);
 
-        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, self, demandChart)
-        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, clusterChart, self)
+        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart)
+        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, clusterChart, self, growthChart)
+        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, clusterChart, self, demandChart)
     }
 
 

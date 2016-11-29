@@ -1,5 +1,5 @@
 ﻿
-function ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart, growthChart) {
+function ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart) {
     var self = this;
 
     self.occdata = occdata;
@@ -18,7 +18,7 @@ ClusterChart.prototype.init = function(){
 
     self.svgBounds = divclusterChart.node().getBoundingClientRect();
     self.svgWidth = (self.svgBounds.width - self.margin.left - self.margin.right);
-    self.svgHeight = 700;
+    self.svgHeight = 550;
 
     self.svg = divclusterChart.append("svg")
         .attr("width",self.svgWidth)
@@ -43,12 +43,10 @@ ClusterChart.prototype.init = function(){
 ClusterChart.prototype.tooltip_render = function(tooltip_data) {
     var self = this;
     var text = "<h2 class = 'tooltip-title'>" + tooltip_data["Occupation Title"] + "</h2>";
-    //text +=  "Electoral Votes: " + tooltip_data.electoralVotes;
-    //text += "<ul>"
-   // tooltip_data.result.forEach(function(row){
-    //    text += "<li class = " + self.chooseClass(row.party)+ ">" + row.nominee+":\t\t"+row.votecount+"\t\t("+row.percentage+"%)" + "</li>"
-    //});
-    //text += "</ul>";
+    text +=  "<b style='font-size:18px;'>Job Description: </b><p style='font-size:18px;'>" + tooltip_data['Job Description'] +"</p>";
+    text += "<ul>"
+       text += "<li>" + tooltip_data.RJDescr_1 + "</li>"
+    text += "</ul>";
     return text;
 }
 
@@ -138,69 +136,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         return x.reverse().filter(function (e, i, x) {return x.indexOf(e, i+1) === -1;}).reverse();
     }
 
-    tip = d3.tip().attr('class', 'd3-tip')
-            .direction('se')
-            .offset(function () {
-                return [0, 0];
-            })
-            .html(function (d) {
-                //if (d.OCC_TITLE !== " ") {
-                // ////console.log(d.I_Nominee_prop)
-                tooltip_data = {
-                    "Occupation Title": d.OCC_TITLE
-                    /*"winner": d.State_Winner,
-                     "electoralVotes": d.Total_EV,
-                     "result": [
-                     {
-                     "nominee": d.D_Nominee_prop,
-                     "votecount": d3.format(',')(d.D_Votes),
-                     "percentage": d.D_Percentage,
-                     "party": "D"
-                     },
-                     {
-                     "nominee": d.R_Nominee_prop,
-                     "votecount": d3.format(',')(d.R_Votes),
-                     "percentage": d.R_Percentage,
-                     "party": "R"
-                     },
-                     {
-                     "nominee": d.I_Nominee_prop,
-                     "votecount": d3.format(',')(d.I_Votes),
-                     "percentage": d.I_Percentage,
-                     "party": "I"
-                     }
-                     ]*/
-                }
-                //}
-                /*else {
-                 tooltip_data = {
-                 "state": d.State,
-                 "winner": d.State_Winner,
-                 "electoralVotes": d.Total_EV,
-                 "result": [
-                 {
-                 "nominee": d.D_Nominee_prop,
-                 "votecount": d3.format(',')(d.D_Votes),
-                 "percentage": d.D_Percentage,
-                 "party": "D"
-                 },
-                 {
-                 "nominee": d.R_Nominee_prop,
-                 "votecount": d3.format(',')(d.R_Votes),
-                 "percentage": d.R_Percentage,
-                 "party": "R"
-                 }
-                 ]
-                 }
-                 }*/
 
-
-                /* pass this as an argument to the tooltip_render function then,
-                 * return the HTML content returned from that method.
-                 * */
-                var html = ClusterChart.prototype.tooltip_render(tooltip_data)
-                return html;
-            });
 
 
     var svg = d3.select('#clusterChart > svg');
@@ -218,12 +154,12 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             else var x = (((((ii + 1) - 15) * ((width - 100) / 7)) + (50 * (Math.random()*(Math.random() < 0.5 ? -1 : 1))))-(((width - 100) / 7)/4));
 
             if (ii + 1 <= 7) {
-                var y = 100 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                var y = 60 - wageScale(+filteredoccdata[i].A_MEDIAN);
             }
             else if (((ii + 1) > 7) && ((ii + 1) <= 15)) {
-                var y = 280 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                var y = 210 - wageScale(+filteredoccdata[i].A_MEDIAN);
             }
-            else var y = 500 - wageScale(+filteredoccdata[i].A_MEDIAN);
+            else var y = 400 - wageScale(+filteredoccdata[i].A_MEDIAN);
         }
         else if (m < 10 && m >=4) {
             if (ii + 1 <= (m/2)) {
@@ -272,7 +208,61 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             STEM_INDEX = filteredoccdata[i].STEMIndex
             ALL = filteredoccdata[i].AllOccupations,
             ALL_INDEX = filteredoccdata[i].AllIndex,
-            PERCENT_CHANGE = +filteredoccdata[i]["Percent Change"]
+            PERCENT_CHANGE = +filteredoccdata[i]["Percent Change"],
+                RJDescr_1 = filteredoccdata[i].RJDescr_1,
+                RJDescr_2 = filteredoccdata[i].RJDescr_2,
+                RJDescr_3 = filteredoccdata[i].RJDescr_3,
+                RJDescr_4 = filteredoccdata[i].RJDescr_4,
+                RJDescr_5 = filteredoccdata[i].RJDescr_5,
+                RJDescr_6 = filteredoccdata[i].RJDescr_6,
+                RJDescr_7 = filteredoccdata[i].RJDescr_7,
+                RJDescr_8 = filteredoccdata[i].RJDescr_8,
+                RJDescr_9 = filteredoccdata[i].RJDescr_9,
+                RJDescr_10 = filteredoccdata[i].RJDescr_10,
+                RJDescr_11 = filteredoccdata[i].RJDescr_11,
+                RJDescr_12 = filteredoccdata[i].RJDescr_12,
+                RJDescr_13 = filteredoccdata[i].RJDescr_13,
+                RJDescr_14 = filteredoccdata[i].RJDescr_14,
+                RJDescr_15 = filteredoccdata[i].RJDescr_15,
+                RJDescr_16 = filteredoccdata[i].RJDescr_16,
+                RJDescr_17 = filteredoccdata[i].RJDescr_17,
+                RJDescr_18 = filteredoccdata[i].RJDescr_18,
+                RJDescr_19 = filteredoccdata[i].RJDescr_19,
+                RJDescr_20 = filteredoccdata[i].RJDescr_20,
+                RJDescr_21 = filteredoccdata[i].RJDescr_21,
+                RJDescr_22 = filteredoccdata[i].RJDescr_22,
+                RJDescr_23 = filteredoccdata[i].RJDescr_23,
+                RJDescr_24 = filteredoccdata[i].RJDescr_24,
+                RJDescr_25 = filteredoccdata[i].RJDescr_25,
+                RJDescr_26 = filteredoccdata[i].RJDescr_26,
+                RJDescr_27 = filteredoccdata[i].RJDescr_27,
+                RJDescr_28 = filteredoccdata[i].RJDescr_28,
+                RJDescr_29 = filteredoccdata[i].RJDescr_29,
+                RJDescr_30 = filteredoccdata[i].RJDescr_30,
+                RJDescr_31 = filteredoccdata[i].RJDescr_31,
+                RJDescr_32 = filteredoccdata[i].RJDescr_32,
+                RJDescr_33 = filteredoccdata[i].RJDescr_33,
+                RJDescr_34 = filteredoccdata[i].RJDescr_34,
+                RJDescr_35 = filteredoccdata[i].RJDescr_35,
+                RJDescr_36 = filteredoccdata[i].RJDescr_36,
+                RJDescr_37 = filteredoccdata[i].RJDescr_37,
+                RJDescr_38 = filteredoccdata[i].RJDescr_38,
+                RJDescr_39 = filteredoccdata[i].RJDescr_39,
+                RJDescr_40 = filteredoccdata[i].RJDescr_40,
+                RJDescr_41 = filteredoccdata[i].RJDescr_41,
+                RJDescr_42 = filteredoccdata[i].RJDescr_42,
+                RJDescr_43 = filteredoccdata[i].RJDescr_43,
+                RJDescr_44 = filteredoccdata[i].RJDescr_44,
+                RJDescr_45 = filteredoccdata[i].RJDescr_45,
+                RJDescr_46 = filteredoccdata[i].RJDescr_46,
+                RJDescr_47 = filteredoccdata[i].RJDescr_47,
+                RJDescr_48 = filteredoccdata[i].RJDescr_48,
+                RJDescr_49 = filteredoccdata[i].RJDescr_49,
+                RJDescr_50 = filteredoccdata[i].RJDescr_50,
+                RJDescr_51 = filteredoccdata[i].RJDescr_51,
+                RJDescr_52 = filteredoccdata[i].RJDescr_52,
+                RJDescr_53 = filteredoccdata[i].RJDescr_53
+
             ;
 
             d = {
@@ -307,6 +297,59 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
                 JOB_DESCR:JOB_DESCR,
                 CLUSTER_NODE:CLUSTER_NODE,
                 PERCENT_CHANGE:PERCENT_CHANGE,
+                RJDescr_1 :RJDescr_1,
+                RJDescr_2 :RJDescr_2,
+                RJDescr_3 :RJDescr_3,
+                RJDescr_4 :RJDescr_4,
+                RJDescr_5 :RJDescr_5,
+                RJDescr_6 :RJDescr_6,
+                RJDescr_7 :RJDescr_7,
+                RJDescr_8 :RJDescr_8,
+                RJDescr_9 :RJDescr_9,
+                RJDescr_10 :RJDescr_10,
+                RJDescr_11 :RJDescr_11,
+                RJDescr_12 :RJDescr_12,
+                RJDescr_13 :RJDescr_13,
+                RJDescr_14 :RJDescr_14,
+                RJDescr_15 :RJDescr_15,
+                RJDescr_16 :RJDescr_16,
+                RJDescr_17 :RJDescr_17,
+                RJDescr_18 :RJDescr_18,
+                RJDescr_19 :RJDescr_19,
+                RJDescr_20 :RJDescr_20,
+                RJDescr_21 :RJDescr_21,
+                RJDescr_22 :RJDescr_22,
+                RJDescr_23 :RJDescr_23,
+                RJDescr_24 :RJDescr_24,
+                RJDescr_25 :RJDescr_25,
+                RJDescr_26 :RJDescr_26,
+                RJDescr_27 :RJDescr_27,
+                RJDescr_28 :RJDescr_28,
+                RJDescr_29 :RJDescr_29,
+                RJDescr_30 :RJDescr_30,
+                RJDescr_31 :RJDescr_31,
+                RJDescr_32 :RJDescr_32,
+                RJDescr_33 :RJDescr_33,
+                RJDescr_34 :RJDescr_34,
+                RJDescr_35 :RJDescr_35,
+                RJDescr_36 :RJDescr_36,
+                RJDescr_37 :RJDescr_37,
+                RJDescr_38 :RJDescr_38,
+                RJDescr_39 :RJDescr_39,
+                RJDescr_40 :RJDescr_40,
+                RJDescr_41 :RJDescr_41,
+                RJDescr_42 :RJDescr_42,
+                RJDescr_43 :RJDescr_43,
+                RJDescr_44 :RJDescr_44,
+                RJDescr_45 :RJDescr_45,
+                RJDescr_46 :RJDescr_46,
+                RJDescr_47 :RJDescr_47,
+                RJDescr_48 :RJDescr_48,
+                RJDescr_49 :RJDescr_49,
+                RJDescr_50 :RJDescr_50,
+                RJDescr_51 :RJDescr_51,
+                RJDescr_52 :RJDescr_52,
+                RJDescr_53 :RJDescr_53,
                 x: x,
                 y: y
             };
@@ -365,12 +408,12 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         .force("y", d3.forceY(function (d,i) {
             if (m > 10) {
                 if (d.ii + 1 <= 7) {
-                    return 100 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                    return 60 - wageScale(+filteredoccdata[i].A_MEDIAN);
                 }
                 else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                    return 280 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                    return 210 - wageScale(+filteredoccdata[i].A_MEDIAN);
                 }
-                else return 500 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                else return 400 - wageScale(+filteredoccdata[i].A_MEDIAN);
             }
             else if (m < 10 && m >=4) {
                 if (d.ii + 1 <= (m/2)) {
@@ -487,12 +530,12 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         .attr('y', function(d,i) {
             if (m > 10) {
                 if (d.ii + 1 <= 7) {
-                    return 160;
+                    return 120;
                 }
                 else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                    return 360 ;
+                    return 290 ;
                 }
-                else return 590;
+                else return 490;
             }
             else if (m < 10 && m >=4) {
                 if (d.ii + 1 <= (m/2)) {
@@ -695,12 +738,12 @@ circles.transition()
      .attr('y', function(d,i) {
          if (m > 10) {
              if (d.ii + 1 <= 7) {
-                 return 160;
+                 return 120;
              }
              else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                 return 360 ;
+                 return 290 ;
              }
-             else return 590;
+             else return 490;
          }
          else if (m < 10 && m >=4) {
              if (d.ii + 1 <= (m/2)) {
@@ -738,6 +781,147 @@ circles.transition()
 
         .attr("opacity", 1)
     ;
+
+    tip = d3.tip().attr('class', 'd3-tip')
+        .direction(function(d){
+            console.log(d.x);
+            if (d.x >=500){
+                return 'sw';
+            }
+            else if (d.x < 500){
+                return 'se';
+            };
+
+        })
+        .offset(function () {
+            return [0, 0];
+        })
+        .html(function (d) {
+            //if (d.OCC_TITLE !== " ") {
+            // ////console.log(d.I_Nominee_prop)
+            tooltip_data = {
+                "State" : d.STATE,
+                "Occupation Title": d.OCC_TITLE,
+                "Occupation Code" : d.OCC_CODE,
+                "Median Annual Wage" : d.A_MEDIAN,
+                "Base Year" : d.BASE_YEAR,
+                "Base Year Employment" : d.BASE_EMP,
+                "Projection Year" : d.PROJECTION_YEAR,
+                "Projection Year Employment" : d.PROJECTION_EMP,
+                "Projected 10-Year Growth" : d.PERCENT_CHANGE,
+                "Projected Annual Openings" : d.AVG_ANN_OPENINGS,
+                "Major Group" : d.MAJOR_GROUP,
+                "Job Description" : d.JOB_DESCR,
+                "Typical Education Required" : d.EDUCATION,
+                "Job Training" : d.TRAINING,
+                "Work Experience" : d.EXPERIENCE,
+                "STEM" : d.STEM,
+                RJDescr_1 : d.RJDescr_1,
+                RJDescr_2 : d.RJDescr_2,
+                RJDescr_3 : d.RJDescr_3,
+                RJDescr_4 : d.RJDescr_4,
+                RJDescr_5 : d.RJDescr_5,
+                RJDescr_6 : d.RJDescr_6,
+                RJDescr_7 : d.RJDescr_7,
+                RJDescr_8 : d.RJDescr_8,
+                RJDescr_9 : d.RJDescr_9,
+                RJDescr_10 : d.RJDescr_10,
+                RJDescr_11 : d.RJDescr_11,
+                RJDescr_12 : d.RJDescr_12,
+                RJDescr_13 : d.RJDescr_13,
+                RJDescr_14 : d.RJDescr_14,
+                RJDescr_15 : d.RJDescr_15,
+                RJDescr_16 : d.RJDescr_16,
+                RJDescr_17 : d.RJDescr_17,
+                RJDescr_18 : d.RJDescr_18,
+                RJDescr_19 : d.RJDescr_19,
+                RJDescr_20 : d.RJDescr_20,
+                RJDescr_21 : d.RJDescr_21,
+                RJDescr_22 : d.RJDescr_22,
+                RJDescr_23 : d.RJDescr_23,
+                RJDescr_24 : d.RJDescr_24,
+                RJDescr_25 : d.RJDescr_25,
+                RJDescr_26 : d.RJDescr_26,
+                RJDescr_27 : d.RJDescr_27,
+                RJDescr_28 : d.RJDescr_28,
+                RJDescr_29 : d.RJDescr_29,
+                RJDescr_30 : d.RJDescr_30,
+                RJDescr_31 : d.RJDescr_31,
+                RJDescr_32 : d.RJDescr_32,
+                RJDescr_33 : d.RJDescr_33,
+                RJDescr_34 : d.RJDescr_34,
+                RJDescr_35 : d.RJDescr_35,
+                RJDescr_36 : d.RJDescr_36,
+                RJDescr_37 : d.RJDescr_37,
+                RJDescr_38 : d.RJDescr_38,
+                RJDescr_39 : d.RJDescr_39,
+                RJDescr_40 : d.RJDescr_40,
+                RJDescr_41 : d.RJDescr_41,
+                RJDescr_42 : d.RJDescr_42,
+                RJDescr_43 : d.RJDescr_43,
+                RJDescr_44 : d.RJDescr_44,
+                RJDescr_45 : d.RJDescr_45,
+                RJDescr_46 : d.RJDescr_46,
+                RJDescr_47 : d.RJDescr_47,
+                RJDescr_48 : d.RJDescr_48,
+                RJDescr_49 : d.RJDescr_49,
+                RJDescr_50 : d.RJDescr_50,
+                RJDescr_51 : d.RJDescr_51,
+                RJDescr_52 : d.RJDescr_52,
+                RJDescr_53 : d.RJDescr_53
+                /*"winner": d.State_Winner,
+                 "electoralVotes": d.Total_EV,
+                 "result": [
+                 {
+                 "nominee": d.D_Nominee_prop,
+                 "votecount": d3.format(',')(d.D_Votes),
+                 "percentage": d.D_Percentage,
+                 "party": "D"
+                 },
+                 {
+                 "nominee": d.R_Nominee_prop,
+                 "votecount": d3.format(',')(d.R_Votes),
+                 "percentage": d.R_Percentage,
+                 "party": "R"
+                 },
+                 {
+                 "nominee": d.I_Nominee_prop,
+                 "votecount": d3.format(',')(d.I_Votes),
+                 "percentage": d.I_Percentage,
+                 "party": "I"
+                 }
+                 ]*/
+            }
+            //}
+            /*else {
+             tooltip_data = {
+             "state": d.State,
+             "winner": d.State_Winner,
+             "electoralVotes": d.Total_EV,
+             "result": [
+             {
+             "nominee": d.D_Nominee_prop,
+             "votecount": d3.format(',')(d.D_Votes),
+             "percentage": d.D_Percentage,
+             "party": "D"
+             },
+             {
+             "nominee": d.R_Nominee_prop,
+             "votecount": d3.format(',')(d.R_Votes),
+             "percentage": d.R_Percentage,
+             "party": "R"
+             }
+             ]
+             }
+             }*/
+
+
+            /* pass this as an argument to the tooltip_render function then,
+             * return the HTML content returned from that method.
+             * */
+            var html = ClusterChart.prototype.tooltip_render(tooltip_data)
+            return html;
+        });
 
         ////console.log(d3.selectAll('.clusterLabels text').call(wrap, 300));
     // .call(wrap, 300);
@@ -845,8 +1029,8 @@ circles.transition()
             simulation.stop();
             var clusterSelection = d3.select(this).property('value');
             self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);
-            distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart);
-            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, self, distChart, growthChart);
+            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart);
             growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
         });
 
@@ -855,9 +1039,9 @@ circles.transition()
             simulation.stop();
             var stateSelection = d3.select(this).property('value');
             self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);
-            distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart);
-            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, self, distChart, growthChart);
-            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
+            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart);
+            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings,minGrowth, maxGrowth,  distChart, demandChart);
         });
 };
 

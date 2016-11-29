@@ -17,7 +17,7 @@ DistChart.prototype.init = function(){
     var divdistChart = d3.select("#distChart").classed("dChart", true);
 
     self.svgBounds = divdistChart.node().getBoundingClientRect();
-    self.svgWidth = 300;//self.svgBounds.width - self.margin.left - self.margin.right);
+    self.svgWidth = 400;//self.svgBounds.width - self.margin.left - self.margin.right);
     self.svgHeight = 170;
 
 
@@ -44,8 +44,8 @@ DistChart.prototype.init = function(){
 
 DistChart.prototype.occbars_render = function(hoverData){
     var self = this;
-    var margin = {top: 50, right: 0, bottom: 10, left: 30};
-    var width = self.svgWidth - 50,
+    var margin = {top: 50, right: 0, bottom: 10, left: 130};
+    var width = self.svgWidth - 150,
         maxBarHeight = 100;
 
     var xw = d3.scaleLinear()
@@ -65,13 +65,13 @@ self.svg
         .attr('height', 110)
         .attr("transform", "translate(0," + maxBarHeight + ")");
 
-    d3.select('.wageChart').append('text')
+    self.svg.append('text')
         .attr("class", "wageLabel")
-        .attr('x', xw(75000))
-        .attr('y', -50)
+        .attr('x', 65)
+        .attr('y', 110)
         .attr('dy', 0)
-        .text("$" + d3.format(".2s")(hoverData))
-        .attr("transform", "translate(0," + maxBarHeight + ")");
+        .text("$" + d3.format(".2s")(hoverData));
+        //.attr("transform", "translate(0," + maxBarHeight + ")");
 }
 
 DistChart.prototype.occbars_out = function(){
@@ -83,12 +83,12 @@ DistChart.prototype.occbars_out = function(){
 }
 
 
-DistChart.prototype.update = function(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart) {
+DistChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, growthChart) {
     var self = this;
-    var margin = {top: 50, right: 0, bottom: 10, left: 30};
+    var margin = {top: 50, right: 0, bottom: 10, left: 130};
    // console.log(stateSelection);
 
-    var width = self.svgWidth - 50,
+    var width = self.svgWidth - 150,
         height = self.svgHeight,
         chartHeight = 200,
         padding = 5, // separation between same-color circles
@@ -230,11 +230,18 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
         })
     }
 
+    self.svg.append('text')
+        .attr("class", "title")
+        .attr('x', 65)
+        .attr('y', 40)
+        .attr('dy', 0)
+        .text("Median Wage");
+
 
     self.svg.append("g")
         .attr("class", "brush")
         .call(d3.brushX()
-            .extent([[30, 40], [self.svgWidth-20, 150]])
+            .extent([[130, 40], [self.svgWidth-20, 150]])
             .on("end", brushed)
         );
 
@@ -243,15 +250,15 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
         if (!d3.event.sourceEvent) return; // Only transition after input.
         if (!d3.event.selection) return; // Ignore empty selections.
         var s = d3.event.selection;
-        var minWage = xw.invert(s[0]-30),
-            maxWage = xw.invert(s[1]-30) >= 100000 ? 200000: xw.invert(s[1]-30);
+        var minWage = xw.invert(s[0]-130),
+            maxWage = xw.invert(s[1]-130) >= 100000 ? 200000: xw.invert(s[1]-130);
 
       console.log(minWage);
       console.log(maxWage);
 
         clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart)
-        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, clusterChart, self, growthChart)
-        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, clusterChart, self, demandChart)
+        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart)
+        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, demandChart)
     }
 
 

@@ -17,7 +17,7 @@ DemandChart.prototype.init = function(){
     var divdemandChart = d3.select("#demandChart").classed("oChart", true);
 
     self.svgBounds = divdemandChart.node().getBoundingClientRect();
-    self.svgWidth = 300;//self.svgBounds.width - self.margin.left - self.margin.right);
+    self.svgWidth = 400;//self.svgBounds.width - self.margin.left - self.margin.right);
     self.svgHeight = 170;
 
 
@@ -43,8 +43,8 @@ DemandChart.prototype.init = function(){
 
 DemandChart.prototype.occbars_render = function(hoverData){
     var self = this;
-    var margin = {top: 50, right: 0, bottom: 10, left: 30};
-    var width = self.svgWidth - 50,
+    var margin = {top: 50, right: 0, bottom: 10, left: 130};
+    var width = self.svgWidth - 150,
         maxBarHeight = 100;
 
 self.svg
@@ -60,13 +60,12 @@ self.svg
         .attr('height', 110)
         .attr("transform", "translate(0," + maxBarHeight + ")");
 
-    d3.select('.demandChart').append('text')
+    self.svg.append('text')
         .attr("class", "wageLabel")
-        .attr('x', self.xw((d3.max(self.data)/10)*(2/3)))
-        .attr('y', -50)
+        .attr('x', 65)
+        .attr('y', 110)
         .attr('dy', 0)
-        .text(d3.format(",.0f")(hoverData))
-        .attr("transform", "translate(0," + maxBarHeight + ")");
+        .text(d3.format(",.0f")(hoverData));
 }
 
 DemandChart.prototype.occbars_out = function(){
@@ -78,12 +77,12 @@ DemandChart.prototype.occbars_out = function(){
 }
 
 
-DemandChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, clusterChart, distChart, growthChart) {
+DemandChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, growthChart) {
     var self = this;
-    var margin = {top: 50, right: 0, bottom: 10, left: 30};
+    var margin = {top: 50, right: 0, bottom: 10, left: 130};
     //console.log(stateSelection);
 
-    var width = self.svgWidth - 50,
+    var width = self.svgWidth - 150,
         height = self.svgHeight,
         chartHeight = 200,
         padding = 5, // separation between same-color circles
@@ -202,7 +201,7 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         .attr('dy', 0)
         .text("Median " + d3.format(",.0f")(avgAnnOpenings))
         .attr("transform", "translate(0," + maxBarHeight + ")")
-        .call(wrap,50);
+        .call(wrap,40);
 
 
 
@@ -232,11 +231,18 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         })
     }
 
+    self.svg.append('text')
+        .attr("class", "title")
+        .attr('x', 65)
+        .attr('y', 40)
+        .attr('dy', 0)
+        .text("Annual Openings");
+
 
     self.svg.append("g")
         .attr("class", "brush")
         .call(d3.brushX()
-            .extent([[30, 40], [self.svgWidth-20, 150]])
+            .extent([[130, 40], [self.svgWidth-20, 150]])
             .on("end", brushed)
         );
 
@@ -247,15 +253,15 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         var s = d3.event.selection;
        // console.log(xwReverse(s[0])-1800);
        // console.log(xwReverse(s[1])-1800);
-        var minOpenings = self.xw.invert(s[0]-30),//-1800,
-            maxOpenings = self.xw.invert(s[1]-30) >= (d3.max(self.data)/10) ? 200000 : self.xw.invert(s[1]-30);
+        var minOpenings = self.xw.invert(s[0]- 130),//-1800,
+            maxOpenings = self.xw.invert(s[1]-130) >= (d3.max(self.data)/10) ? 200000 : self.xw.invert(s[1]-130);
 
         console.log(minOpenings);
         console.log(maxOpenings);
 
         clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, self, growthChart)
-        distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart)
-        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, clusterChart, distChart, self)
+        distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart)
+        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, self)
     }
 
 

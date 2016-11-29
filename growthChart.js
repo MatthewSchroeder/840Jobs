@@ -17,7 +17,7 @@ GrowthChart.prototype.init = function(){
     var divgrowthChart = d3.select("#growthChart").classed("gChart", true);
 
     self.svgBounds = divgrowthChart.node().getBoundingClientRect();
-    self.svgWidth = 300;//self.svgBounds.width - self.margin.left - self.margin.right);
+    self.svgWidth = 400;//self.svgBounds.width - self.margin.left - self.margin.right);
     self.svgHeight = 170;
 
 
@@ -41,32 +41,31 @@ GrowthChart.prototype.init = function(){
     }
 }**/
 
-GrowthChart.prototype.occbars_render = function(hoverData){
+GrowthChart.prototype.occbars_render = function(hoverData) {
     var self = this;
-    var margin = {top: 50, right: 0, bottom: 10, left: 30};
-    var width = self.svgWidth - 50,
+    var margin = {top: 50, right: 0, bottom: 10, left: 130};
+    var width = self.svgWidth - 150,
         maxBarHeight = 100;
 
-self.svg
-    .append('g')
-    .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")")
-    .append('rect')
+    self.svg
+        .append('g')
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")")
+        .append('rect')
         .attr("class", "wageBar")
-        .attr('x', hoverData >= (d3.max(self.data)/4) ? self.xw(d3.max(self.data)/4) : self.xw(hoverData))
+        .attr('x', hoverData >= (d3.max(self.data) / 4) ? self.xw(d3.max(self.data) / 4) : self.xw(hoverData))
         .attr('y', -110)
         .attr('width', 3)
         .attr('fill', 'black')
         .attr('height', 110)
         .attr("transform", "translate(0," + maxBarHeight + ")");
 
-    d3.select('.growthChart').append('text')
+    self.svg.append('text')
         .attr("class", "wageLabel")
-        .attr('x', self.xw(.2))
-        .attr('y', -50)
+        .attr('x', 65)
+        .attr('y', 110)
         .attr('dy', 0)
-        .text(d3.format(".1%")(hoverData))
-        .attr("transform", "translate(0," + maxBarHeight + ")");
+        .text(d3.format(".1%")(hoverData));
 }
 
 GrowthChart.prototype.occbars_out = function(){
@@ -78,12 +77,12 @@ GrowthChart.prototype.occbars_out = function(){
 }
 
 
-GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, clusterChart, distChart, demandChart) {
+GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, demandChart) {
     var self = this;
-    var margin = {top: 50, right: 0, bottom: 10, left: 30};
+    var margin = {top: 50, right: 0, bottom: 10, left: 130};
     //console.log(stateSelection);
 
-    var width = self.svgWidth - 50,
+    var width = self.svgWidth - 150,
         height = self.svgHeight,
         chartHeight = 200,
         padding = 5, // separation between same-color circles
@@ -108,7 +107,7 @@ GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelectio
     // moves the 'group' element to the top left margin
 
     var group = self.svg.append("g")
-        .attr("class", 'growthChart')
+        .attr("class", 'chartGroup')
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
@@ -232,11 +231,18 @@ GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         })
     }
 
+    self.svg.append('text')
+        .attr("class", "title")
+        .attr('x', 65)
+        .attr('y', 40)
+        .attr('dy', 0)
+        .text("Growth Outlook");
+
 
     self.svg.append("g")
         .attr("class", "brush")
         .call(d3.brushX()
-            .extent([[30, 40], [self.svgWidth-20, 150]])
+            .extent([[130, 40], [self.svgWidth-20, 150]])
             .on("end", brushed)
         );
 
@@ -247,15 +253,15 @@ GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         var s = d3.event.selection;
        // console.log(xwReverse(s[0])-1800);
        // console.log(xwReverse(s[1])-1800);
-        var minGrowth = self.xw.invert(s[0]-30),//-1800,
-            maxGrowth = self.xw.invert(s[1]-30) >= 0.40 ? 500 : self.xw.invert(s[1]-30);
+        var minGrowth = self.xw.invert(s[0]-130),//-1800,
+            maxGrowth = self.xw.invert(s[1]-130) >= 0.40 ? 500 : self.xw.invert(s[1]-130);
 
         console.log(minGrowth);
         console.log(maxGrowth);
 
         clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, self)
-        distChart.update(occdata, clusterSelection, stateSelection, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, self)
-        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minGrowth, maxGrowth, clusterChart, distChart, self)
+        distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, self)
+        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, self)
     }
 
 

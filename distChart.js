@@ -18,7 +18,7 @@ DistChart.prototype.init = function(){
 
     self.svgBounds = divdistChart.node().getBoundingClientRect();
     self.svgWidth = 400;//self.svgBounds.width - self.margin.left - self.margin.right);
-    self.svgHeight = 170;
+    self.svgHeight = 190;
 
 
     self.svg = d3.select('#distChart').append("svg")

@@ -18,7 +18,7 @@ ClusterChart.prototype.init = function(){
 
     self.svgBounds = divclusterChart.node().getBoundingClientRect();
     self.svgWidth = (self.svgBounds.width - self.margin.left - self.margin.right);
-    self.svgHeight = 550;
+    self.svgHeight = 600;
 
     self.svg = divclusterChart.append("svg")
         .attr("width",self.svgWidth)
@@ -44,9 +44,47 @@ ClusterChart.prototype.tooltip_render = function(tooltip_data) {
     var self = this;
     var text = "<h2 class = 'tooltip-title'>" + tooltip_data["Occupation Title"] + "</h2>";
     text +=  "<b style='font-size:18px;'>Job Description: </b><p style='font-size:18px;'>" + tooltip_data['Job Description'] +"</p>";
-    text += "<ul>"
-       text += "<li>" + tooltip_data.RJDescr_1 + "</li>"
+    text +=  "<b style='font-size:18px;'>Related Occupations: </b>";
+    text += "<ul>";
+    if (tooltip_data.RJDescr_1 != "") {
+        text += "<li>" + tooltip_data.RJDescr_1 + "</li>";
+        if (tooltip_data.RJDescr_2 != "") {
+            text += "<li>" + tooltip_data.RJDescr_2 + "</li>";
+            if (tooltip_data.RJDescr_3 != "") {
+                text += "<li>" + tooltip_data.RJDescr_3 + "</li>";
+                if (tooltip_data.RJDescr_4 != "") {
+                    text += "<li>" + tooltip_data.RJDescr_4 + "</li>";
+                    if (tooltip_data.RJDescr_5 != "") {
+                        text += "<li>" + tooltip_data.RJDescr_5 + "</li>";
+                        if (tooltip_data.RJDescr_6 != "") {
+                            text += "<li>" + tooltip_data.RJDescr_6 + "</li>";
+                            if (tooltip_data.RJDescr_7 != "") {
+                                text += "<li>" + tooltip_data.RJDescr_7 + "</li>";
+                                if (tooltip_data.RJDescr_8 != "") {
+                                    text += "<li>" + tooltip_data.RJDescr_8 + "</li>";
+                                    if (tooltip_data.RJDescr_9 != "") {
+                                        text += "<li>" + tooltip_data.RJDescr_9 + "</li>";
+                                        if (tooltip_data.RJDescr_10 != "") {
+                                            text += "<li>" + tooltip_data.RJDescr_10 + "</li>";
+    }}}}}}}}}}
+    else text += "<li>None identified</li>";
+        /*text += "<li>" + tooltip_data.RJDescr_2 + "</li>"
+        text += "<li>" + tooltip_data.RJDescr_3 + "</li>"
+        text += "<li>" + tooltip_data.RJDescr_4 + "</li>"
+        text += "<li>" + tooltip_data.RJDescr_5 + "</li>"
+        text += "<li>" + tooltip_data.RJDescr_6 + "</li>"
+        text += "<li>" + tooltip_data.RJDescr_7 + "</li>"
+        text += "<li>" + tooltip_data.RJDescr_8 + "</li>"
+        text += "<li>" + tooltip_data.RJDescr_9 + "</li>"
+        text += "<li>" + tooltip_data.RJDescr_10 + "</li>"*/
     text += "</ul>";
+    return text;
+}
+
+ClusterChart.prototype.tooltip_render2 = function(tooltip_data2) {
+    var self = this;
+    var text = "<h2 class = 'tooltip-title'>" + tooltip_data2["Occupation Title"] + "</h2>";
+    text +=  "<p style='font-size:18px; color: #e74c3c'><i>Click the circle for more details.</i></p>";
     return text;
 }
 
@@ -86,6 +124,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
     var colorScale = d3.scaleOrdinal()
         .domain(['No formal educational credential','High school diploma or equivalent','Some college, no degree','Postsecondary nondegree award',"Associate's degree","Bachelor's degree","Master's degree",'Doctoral or professional degree'])
         .range(['#d6d600','#ff7f00','#a65628','#e41a1c','#f781bf','#984ea3','#377eb8','#4daf4a']);//(d3.schemeCategory10);
+    console.log(colorScale.domain());
 
     var radiusScale = d3.scaleLinear()
         .domain([0, d3.max(statefilteredoccdata,(function(d,i) {
@@ -136,8 +175,29 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         return x.reverse().filter(function (e, i, x) {return x.indexOf(e, i+1) === -1;}).reverse();
     }
 
+    var clusterChartTitle = document.getElementById('clusterChartTitle');
+    d3.select('#clusterChartTitle > text').remove();
+    var byCluster = document.createElement('text');
 
+        if (d3.select('#clusterSelect').property('value') == "Education"){
+            var clusterDescr = " Level of Education Typically Required";
+        }
+        else if (d3.select('#clusterSelect').property('value') == "MajorGroup"){
+            var clusterDescr = " Major Occupational Group";
+        }
+        else if (d3.select('#clusterSelect').property('value') == "Training"){
+            var clusterDescr = " Typical Job Training";
+        }
+        else if (d3.select('#clusterSelect').property('value') == "Experience"){
+            var clusterDescr = " Experience Level";
+        }
+        else if (d3.select('#clusterSelect').property('value') == "STEM"){
+            var clusterDescr = " STEM (Science, Tech, Engineering, Math) vs Non-STEM";
+        }
+        else var clusterDescr = " All Occupations";
 
+    byCluster.appendChild(document.createTextNode(clusterDescr));
+    clusterChartTitle.appendChild(byCluster);
 
     var svg = d3.select('#clusterChart > svg');
 
@@ -154,12 +214,12 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             else var x = (((((ii + 1) - 15) * ((width - 100) / 7)) + (50 * (Math.random()*(Math.random() < 0.5 ? -1 : 1))))-(((width - 100) / 7)/4));
 
             if (ii + 1 <= 7) {
-                var y = 60 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                var y = 120 - wageScale(+filteredoccdata[i].A_MEDIAN);
             }
             else if (((ii + 1) > 7) && ((ii + 1) <= 15)) {
-                var y = 210 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                var y = 270 - wageScale(+filteredoccdata[i].A_MEDIAN);
             }
-            else var y = 400 - wageScale(+filteredoccdata[i].A_MEDIAN);
+            else var y = 460 - wageScale(+filteredoccdata[i].A_MEDIAN);
         }
         else if (m < 10 && m >=4) {
             if (ii + 1 <= (m/2)) {
@@ -168,14 +228,14 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             else var x = (((((ii + 1)-(m/2)) * ((width - 100) / (m/2))) + (100 * (Math.random()*(Math.random() < 0.5 ? -1 : 1))))-(((width - 100) / (m/2))/2));
 
             if (ii + 1 <= (m/2)) {
-                var y = 130 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
+                var y = 190 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
             }
-            else var y = 430 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
+            else var y = 490 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
 
         }
         else if (m < 4) {
                     var x = (((((ii + 1) * ((width - 100)/m))) + (100 * (Math.random()*(Math.random() < 0.5 ? -1 : 1))))-(((width - 100) / (m))*(2/5)));
-                    var y = 200 - 3*wageScale(+filteredoccdata[i].A_MEDIAN);
+                    var y = 260 - 3*wageScale(+filteredoccdata[i].A_MEDIAN);
 
             };
 
@@ -408,21 +468,21 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         .force("y", d3.forceY(function (d,i) {
             if (m > 10) {
                 if (d.ii + 1 <= 7) {
-                    return 60 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                    return 120 - wageScale(+filteredoccdata[i].A_MEDIAN);
                 }
                 else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                    return 210 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                    return 270 - wageScale(+filteredoccdata[i].A_MEDIAN);
                 }
-                else return 400 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                else return 460 - wageScale(+filteredoccdata[i].A_MEDIAN);
             }
             else if (m < 10 && m >=4) {
                 if (d.ii + 1 <= (m/2)) {
-                    return 130 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
+                    return 190 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
                 }
-                else return 430 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
+                else return 490 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
             }
             else if (m < 4) {
-                    return 200 - 3*wageScale(+filteredoccdata[i].A_MEDIAN);
+                    return 260 - 3*wageScale(+filteredoccdata[i].A_MEDIAN);
             }})
             .strength(.1))
 
@@ -436,7 +496,9 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
     var circles = svg.selectAll('.circles').data(nodes, function(d){
                 return d.ID;
         })
-        .on('click', function(){
+        .on('click', function(d){
+
+            this.active ? tip.hide(d) : tip.show(d);
             var active   = this.active ? false : true,
                 newClass = active ? 'circles highlight' : 'circles';
             // Hide or show the elements
@@ -485,7 +547,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             distChart.occbars_render(medianWage);
             demandChart.occbars_render(avgOpenings);
             growthChart.occbars_render(medianGrowthRate);
-            tip.show(d);
+            tip2.show(d);
             //wage_render
         })
         //.on('mouseover', tip.show)
@@ -493,9 +555,10 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             distChart.occbars_out();
             demandChart.occbars_out();
             growthChart.occbars_out();
-            tip.hide(d);
+            tip2.hide(d);
         })
-        .on('click', function(){
+        .on('click', function(d){
+            this.active ? tip.hide(d) : tip.show(d);
             var active   = this.active ? false : true,
                 newClass = active ? 'circles highlight' : 'circles';
             // Hide or show the elements
@@ -530,21 +593,21 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         .attr('y', function(d,i) {
             if (m > 10) {
                 if (d.ii + 1 <= 7) {
-                    return 120;
+                    return 180;
                 }
                 else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                    return 290 ;
+                    return 350 ;
                 }
-                else return 490;
+                else return 550;
             }
             else if (m < 10 && m >=4) {
                 if (d.ii + 1 <= (m/2)) {
-                    return 270;
+                    return 330;
                 }
-                else return 520;
+                else return 575;
             }
             else if (m < 4) {
-                return 420;
+                return 480;
             }})
         .attr('dy', 0)
         .text(function(d){
@@ -738,21 +801,21 @@ circles.transition()
      .attr('y', function(d,i) {
          if (m > 10) {
              if (d.ii + 1 <= 7) {
-                 return 120;
+                 return 180;
              }
              else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                 return 290 ;
+                 return 350 ;
              }
-             else return 490;
+             else return 550;
          }
          else if (m < 10 && m >=4) {
              if (d.ii + 1 <= (m/2)) {
-                 return 270;
+                 return 330;
              }
-             else return 520;
+             else return 575;
          }
          else if (m < 4) {
-             return 420;
+             return 480;
          }})
      .attr('dy', 0)
      .text(function(d){
@@ -782,6 +845,84 @@ circles.transition()
         .attr("opacity", 1)
     ;
 
+    var newColorScale = d3.scaleOrdinal()
+        .domain(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
+        .range(['#d6d600','#ff7f00','#a65628','#e41a1c','#f781bf','#984ea3','#377eb8','#4daf4a']);
+
+    svg.append('g')
+        .attr('class', 'colorLegend')
+        .attr("transform",
+            "translate(30,10)");
+
+    var legend = d3.legendColor()
+        .scale(newColorScale)
+        .orient('horizontal')
+        .shape('rect')
+        .shapeHeight('25')
+        .shapeWidth('25')
+        .shapePadding('15')
+        //.title("Colored by Education")
+        .labels(["None","High school","Some college","Certificate","Associate's","Bachelor's","Master's","Doctoral"]);
+
+    svg.select(".colorLegend")
+        .call(legend);
+
+    var shadeScale = d3.scaleOrdinal()
+        .domain(['a', 'b', 'c'])
+        .range(['#f0f0f0','#bdbdbd','#636363']);
+
+    svg.append('g')
+        .attr('class', 'shadeLegend')
+        .attr("transform",
+            "translate(450,10)");
+
+    var legend2 = d3.legendColor()
+        .scale(shadeScale)
+        .orient('vertical')
+        .ascending(true)
+        .shape('rect')
+        .shapeHeight('20')
+        .shapeWidth('40')
+        .shapePadding('0')
+        //.title("Colored by Education")
+        .labels(["Low Wage", "Mid Wage", "High Wage"]);
+
+    svg.select(".shadeLegend")
+        .call(legend2);
+
+    svg.select(".sizeLegend").remove();
+    var newRadiusScale = d3.scaleLinear()
+        .domain([0, d3.max(statefilteredoccdata,(function(d,i) {
+            return +d["Average Annual Openings"];
+        }))])
+        .range([4, maxRadius]);
+
+    svg.append('g')
+        .attr('class', 'sizeLegend')
+        .attr("transform",
+            "translate(620,40)");
+
+    var legend3 = d3.legendSize()
+        .scale(newRadiusScale)
+        .orient('horizontal')
+        .shape('circle')
+        .shapePadding('10')
+        //.labels(['a', 'b', 'c' , 'd', 'e']);
+        .labelFormat(d3.format(",.0f"));
+
+    svg.select(".sizeLegend")
+        .call(legend3);
+
+    svg.append('g')
+        .attr("transform",
+            "translate(620,15)")
+        .append('text')
+        .text("Larger circle = more openings ----->")
+        .attr('font-size', '16px');
+
+
+
+
     tip = d3.tip().attr('class', 'd3-tip')
         .direction(function(d){
             console.log(d.x);
@@ -793,8 +934,8 @@ circles.transition()
             };
 
         })
-        .offset(function () {
-            return [0, 0];
+        .offset(function(d) {
+           return (d.y >= 250 ? [-300, 0]:[-100,0]);
         })
         .html(function (d) {
             //if (d.OCC_TITLE !== " ") {
@@ -923,6 +1064,43 @@ circles.transition()
             return html;
         });
 
+    tip2 = d3.tip().attr('class', 'd3-tip')
+        .direction(function(d){
+            console.log(d.x);
+            if (d.x >=500){
+                return 'sw';
+            }
+            else if (d.x < 500){
+                return 'se';
+            };
+
+        })
+        .html(function (d) {
+            //if (d.OCC_TITLE !== " ") {
+            // ////console.log(d.I_Nominee_prop)
+            tooltip_data2 = {
+                "State": d.STATE,
+                "Occupation Title": d.OCC_TITLE,
+                "Occupation Code": d.OCC_CODE,
+                "Median Annual Wage": d.A_MEDIAN,
+                "Base Year": d.BASE_YEAR,
+                "Base Year Employment": d.BASE_EMP,
+                "Projection Year": d.PROJECTION_YEAR,
+                "Projection Year Employment": d.PROJECTION_EMP,
+                "Projected 10-Year Growth": d.PERCENT_CHANGE,
+                "Projected Annual Openings": d.AVG_ANN_OPENINGS,
+                "Major Group": d.MAJOR_GROUP,
+                "Job Description": d.JOB_DESCR,
+                "Typical Education Required": d.EDUCATION,
+                "Job Training": d.TRAINING,
+                "Work Experience": d.EXPERIENCE,
+                "STEM": d.STEM
+            }
+
+            var html = ClusterChart.prototype.tooltip_render2(tooltip_data2)
+            return html;
+        });
+
         ////console.log(d3.selectAll('.clusterLabels text').call(wrap, 300));
     // .call(wrap, 300);
 
@@ -995,6 +1173,7 @@ circles.transition()
     }
     function callTip(){
         d3.selectAll('.circles').call(tip);
+        d3.selectAll('.circles').call(tip2);
     }
 
     function wrap(text, width) {
@@ -1025,7 +1204,8 @@ circles.transition()
 
 
     d3.select('#clusterSelect')
-        .on('change', function() {
+        .on('change', function(d) {
+            tip.hide(d);
             simulation.stop();
             var clusterSelection = d3.select(this).property('value');
             self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);
@@ -1035,7 +1215,8 @@ circles.transition()
         });
 
     d3.select('#stateSelect')
-        .on('change', function() {
+        .on('change', function(d) {
+            tip.hide(d);
             simulation.stop();
             var stateSelection = d3.select(this).property('value');
             self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);

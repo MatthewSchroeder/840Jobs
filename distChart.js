@@ -1,5 +1,5 @@
 ﻿
-function DistChart(occdata, clusterSelection, stateSelection, clusterChart, demandChart, growthChart) {
+function DistChart(occdata, clusterSelection, stateSelection, clusterChart, demandChart, growthChart, map, mapdata) {
     var self = this;
 
     self.occdata = occdata;
@@ -77,13 +77,13 @@ self.svg
 DistChart.prototype.occbars_out = function(){
     var self = this;
 
-    d3.select('.wageBar').remove();
-    d3.select('.wageLabel').remove();
+    d3.selectAll('.wageBar').remove();
+    d3.selectAll('.wageLabel').remove();
 
 }
 
 
-DistChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, growthChart) {
+DistChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, growthChart, map, mapdata) {
     var self = this;
     var margin = {top: 50, right: 0, bottom: 10, left: 130};
    // console.log(stateSelection);
@@ -256,9 +256,9 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
       console.log(minWage);
       console.log(maxWage);
 
-        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart)
-        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart)
-        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, demandChart)
+        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart, map, mapdata)
+        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart, map, mapdata)
+        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, demandChart, map, mapdata)
     }
 
 

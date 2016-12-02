@@ -9,11 +9,11 @@
             <div class="col-sm-6">
                 <h1 style ="font-family:BenchNine; font-size:160px">840 Jobs<p style ="font-size:40px">Occupational Data to Inform Your Future</p></h1>
             </div>
-            <div class="col-sm-6">
+            <!--<div class="col-sm-6">
                 <div class="pull-right hidden-sm">
                     <h1><a href="#"><i class="glyphicon glyphicon-user"></i> <i class="glyphicon glyphicon-chevron-down"></i></a></h1>
                 </div>
-            </div>
+            </div>-->
         </div>
     </div>
 </header>
@@ -21,7 +21,7 @@
 
 <!-- Begin Navbar -->
 <div id="nav" style ="font-family:BenchNine;">
-    <div class="navbar navbar-inverse" data-spy="affix" data-offset-top="197">
+    <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="197">
         <div class="container">
 
             <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
@@ -117,7 +117,7 @@
                 </ul>
             </div>
         </div>
-    </div><!-- /.navbar -->
+    </nav><!-- /.navbar -->
 </div>
 
 <!--<nav class="navbar navbar-default navbar-static-top">
@@ -191,11 +191,99 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+   <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.3.7/js/tether.min.js" integrity="sha384-XTs3FgkjiBgo8qjEjBk0tGmf3wPrWtA6coPfQDfFEY8AnYJwjalXCiosYRBIBZX8" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
+    -->
 </head>
 
 <body style ="font-family:BenchNine;">
+<div>
+    <div id="infoPanel">
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                            Welcome to 840 Jobs</a>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <p>Welcome to 840 Jobs. If you have questions about your future career, then you're in the right place. This tool is designed to help you answer questions like: What jobs pay the best? Which ones are in high demand? What are my prospects for growth and advancement in a particular career? Where am I most likely to be able to find a certain job? If you have questions like this, then this tool likely has some answers for you.</p>
 
-<div id="clusterChartTitle">Occupations Clustered by</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                            Background</a>
+                    </h4>
+                </div>
+                <div id="collapse2" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <p>The US Bureau of Labor Statistics (BLS) has defined 840 unique occupations for which it gathers detailed employment and wage data. Additionally, in partnership with the BLS, all 50 states then use that information, along with state level industry trends and staffing patterns to develop projections of how each of these occupations will grow and how many openings they are expected to have on average each year over a ten-year time horizon (currently 2014 - 2024). Choose between all 50 states plus DC, or the US total by using the menu at the top.</p>
+
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                            Understanding the Custer Chart</a>
+                    </h4>
+                </div>
+                <div id="collapse3" class="panel-collapse collapse">
+                    <div class="panel-body" style="background-color:white;">
+                        <p>With 840 Jobs you can explore, compare, and learn about the many career opportunities that might interest you. Each circle in the cluster chart below represents a different occupation. Hover over each one to see the job title, and click each circle to read a detailed job description and see a list of related occupations. Each circle is colored by the typical education needed, sized by expected annual openings, and organized into three wage bands - low to high - within each cluster. The clusters show you how these jobs are related to each other across various categories. Change clusters by using the menu at the top.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                            Understanding the Histograms (the green bar charts)</a>
+                    </h4>
+                </div>
+                <div id="collapse4" class="panel-collapse collapse">
+                    <div class="panel-body" style="background-color:white;">
+                        <p>The histograms (the green bar charts) to the right give an idea of how these occupations are distributed across the ranges of possible wages, openings, and growth. Taller green bars mean that more jobs fall within that range of the chart's axis.  As you hover over each circle in the cluster chart, information will appear on the histograms to show you exactly where that particular job falls within the distribution. Highlight portions of each histogram's range to filter the occupations displayed in the cluster chart.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+                            Understanding the Maps</a>
+                    </h4>
+                </div>
+                <div id="collapse5" class="panel-collapse collapse">
+                    <div class="panel-body" style="background-color:white;">
+                        <p>Below the cluster chart you will find two maps that give some geographic context to each occupation as you click on them in cluster chart. Click on your job of interest in the cluster chart and the map on the bottom-left will update to show which states have the least-to-most openings.  The map on the bottom-right will update to show where that occupation is growing the fastest. Hover over each state to see the actual data.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--<p>Welcome to 840 Jobs. If you have questions about your future career, this is a good place to start. This tool is designed to help you answer questions like: What jobs pay the best? Which ones are in high demand? What are my prospects for growth and advancement in a particular career? Where am I most likely to be able to find a certain job? If you have questions like this, then this tool likely has some answers for you.</p>
+            <p>The US Bureau of Labor Statistics (BLS) has defined 840 unique occupations for which it gathers detailed employment and wage data. Additionally, in partnership with the BLS, all 50 states then use that information, along with state level industry trends and staffing patterns to develop projections of how each of these occupations will grow and how many openings they are expected to have on average each year over a ten-year time horizon (currently 2014 - 2024). Choose between all 50 states plus DC, or the US total by using the menu at the top.</p>
+            <p>Use this interactive data tool to explore, compare, and learn about all 840 jobs.  Each circle in the chart below represents a different occupation. Hover over each one to see the job title, and click each circle to read the detailed job description and see a list of related occupations. Each circle is colored by the typical education needed, sized by expected annual openings, and organized into three wage bands - low to high - within each cluster. The clusters show you how these jobs are related to each other across various categories. Change clusters by using the menu at the top.</p>
+            <p>The histograms (the green bar charts) to the right give an idea of how these occupations are distributed across the ranges of possible wages, openings, and growth. Taller green bars mean that more jobs fall within that range of the chart's axis.  As you hover over each circle in the cluster chart, information will appear on the histograms to show you exactly where that particular job falls within the distribution. Highlight portions of each histogram's range to filter the occupations displayed in the cluster chart.</p>
+            <p>Below the cluster chart yoy will find two maps that give some geographic contect to each occupation as you click on them in cluster chart. Click on your job of interest and the map on the left will update to show which states have the most openings.  The map on the right will update to show where that occupation is growing the fastest. Hover over each state to see the actual numbers.</p>
+            -->
+    </div>
+    <div id="clusterLegend"></div>
+</div>
+<div>
+    <div id="clusterChartTitle">Occupations Clustered by</div>
+    <div id="histFilterTitle">Wages, Openings, and Growth</div>
+</div>
 
 <!--<h1>840 Jobs</h1>-->
 <!--<p class="info">Name: Matt Schroeder; E-Mail: matthew.schroeder@utah.edu; UID: 0202874</p>-->
@@ -207,15 +295,12 @@
     </div>
 
     <div id = "filterTable" style="display: table">
-
         <!--<h1>Wages</h1>-->
         <div id = "distChart">
         </div>
-
         <!--<h1>Demand</h1>-->
         <div id = "demandChart">
         </div>
-
         <div id = "growthChart">
         </div>
     </div>
@@ -248,20 +333,26 @@
     </div>
 </div>-->
 
-<div id = "stateChart" class = "view">
+<div id = "spacer" class = "view">
+</div>
+<div class = "mapContainer">
+
+    <div id = "map1" class = "maps">Projected Annual Openings</div>
+    <div id = "map2" class = "maps">Long-Term Growth Outlook</div>
 </div>
 
 
-<div id = "infoPanel" class = "view">
-</div>
+
 
 
 <script type="application/javascript" src="clusterChart.js"></script>
 <script type="application/javascript" src="distChart.js"></script>
 <script type="application/javascript" src="demandChart.js"></script>
 <script type="application/javascript" src="growthChart.js"></script>
+<script type="application/javascript" src="map.js"></script>
 <!--<script type="application/javascript" src="stateChart.js"></script>
 <script type="application/javascript" src="infoPanel.js"></script>-->
 <script type="application/javascript" src="main.js"></script>
+
 </body>
 </html>

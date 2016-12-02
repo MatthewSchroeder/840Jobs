@@ -1,16 +1,17 @@
 ﻿
-function ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart) {
+function ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata) {
     var self = this;
 
     self.occdata = occdata;
     self.distChart = distChart;
     self.demandChart = demandChart;
     self.growthChart = growthChart;
-    self.init();
+    self.map = map;
+    self.init(occdata, stateSelection);
 };
 
 
-ClusterChart.prototype.init = function(){
+ClusterChart.prototype.init = function(occdata, stateSelection){
 
     var self = this;
     self.margin = {top: 10, right: 0, bottom: 30, left: 60};
@@ -23,6 +24,97 @@ ClusterChart.prototype.init = function(){
     self.svg = divclusterChart.append("svg")
         .attr("width",self.svgWidth)
         .attr("height",self.svgHeight)
+
+    var statefilteredoccdata = occdata
+        .filter(function(d) {
+            return ((d["STATE"] == "" + stateSelection + "") && (d["OCC_GROUP"] == "detailed"));
+        });
+
+    var clusterLegend = d3.select('#clusterLegend');
+
+    var legendBounds = clusterLegend.node().getBoundingClientRect(),
+        legendWidth = (legendBounds.width - self.margin.left - self.margin.right),
+        legendHeight = 150;
+
+    var legendSVG = clusterLegend.append("svg")
+            .classed('legendSVG', true)
+            .attr("width",legendWidth)
+            .attr("height",legendHeight);
+
+    var newColorScale = d3.scaleOrdinal()
+        .domain(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
+        .range(['#d6d600','#ff7f00','#a65628','#e41a1c','#f781bf','#984ea3','#377eb8','#4daf4a']);
+
+    legendSVG.append('g')
+        .attr('class', 'colorLegend')
+        .attr("transform",
+            "translate(5,10)");
+
+    var legend = d3.legendColor()
+        .scale(newColorScale)
+        .orient('horizontal')
+        .shape('rect')
+        .shapeHeight('25')
+        .shapeWidth('25')
+        .shapePadding('19')
+        //.title("Colored by Education")
+        .labels(["None","High school","Some college","Certificate","Associate's","Bachelor's","Master's","Doctoral"]);
+
+    legendSVG.select(".colorLegend")
+        .call(legend);
+
+    var shadeScale = d3.scaleOrdinal()
+        .domain(['a', 'b', 'c'])
+        .range(['#f0f0f0','#bdbdbd','#636363']);
+
+    legendSVG.append('g')
+        .attr('class', 'shadeLegend')
+        .attr("transform",
+            "translate(5,70)");
+
+    var legend2 = d3.legendColor()
+        .scale(shadeScale)
+        .orient('vertical')
+        .ascending(true)
+        .shape('rect')
+        .shapeHeight('20')
+        .shapeWidth('40')
+        .shapePadding('0')
+        //.title("Colored by Education")
+        .labels(["Low Wage", "Mid Wage", "High Wage"]);
+
+    legendSVG.select(".shadeLegend")
+        .call(legend2);
+
+    legendSVG.select(".sizeLegend").remove();
+    var newRadiusScale = d3.scaleLinear()
+        .domain([0, d3.max(statefilteredoccdata,(function(d,i) {
+            return +d["Average Annual Openings"];
+        }))])
+        .range([4, 30]);
+
+    legendSVG.append('g')
+        .attr('class', 'sizeLegend')
+        .attr("transform",
+            "translate(100,100)");
+
+    var legend3 = d3.legendSize()
+        .scale(newRadiusScale)
+        .orient('horizontal')
+        .shape('circle')
+        .shapePadding('9')
+        //.labels(['a', 'b', 'c' , 'd', 'e']);
+        .labelFormat(d3.format(",.0f"));
+
+    legendSVG.select(".sizeLegend")
+        .call(legend3);
+
+    legendSVG.append('g')
+        .attr("transform",
+            "translate(100,75)")
+        .append('text')
+        .text("Larger circle = more openings ----->")
+        .attr('font-size', '16px');
 
 };
 
@@ -42,7 +134,8 @@ ClusterChart.prototype.init = function(){
 
 ClusterChart.prototype.tooltip_render = function(tooltip_data) {
     var self = this;
-    var text = "<h2 class = 'tooltip-title'>" + tooltip_data["Occupation Title"] + "</h2>";
+    var text = "<span id='close' onclick='tip.hide()' style = 'float: right;'><b style = 'font-size: 30px;'>&times</b></span>";
+    text += "<h2 class = 'tooltip-title'>" + tooltip_data["Occupation Title"] + "</h2>";
     text +=  "<b style='font-size:18px;'>Job Description: </b><p style='font-size:18px;'>" + tooltip_data['Job Description'] +"</p>";
     text +=  "<b style='font-size:18px;'>Related Occupations: </b>";
     text += "<ul>";
@@ -91,7 +184,7 @@ ClusterChart.prototype.tooltip_render2 = function(tooltip_data2) {
 
 
 
-ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart){
+ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata){
     var self = this;
 
     var filteredoccdata = occdata
@@ -192,7 +285,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             var clusterDescr = " Experience Level";
         }
         else if (d3.select('#clusterSelect').property('value') == "STEM"){
-            var clusterDescr = " STEM (Science, Tech, Engineering, Math) vs Non-STEM";
+            var clusterDescr = " STEM (Science, Tech, Engineering, Math)";
         }
         else var clusterDescr = " All Occupations";
 
@@ -214,12 +307,12 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             else var x = (((((ii + 1) - 15) * ((width - 100) / 7)) + (50 * (Math.random()*(Math.random() < 0.5 ? -1 : 1))))-(((width - 100) / 7)/4));
 
             if (ii + 1 <= 7) {
-                var y = 120 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                var y = 70 - wageScale(+filteredoccdata[i].A_MEDIAN);
             }
             else if (((ii + 1) > 7) && ((ii + 1) <= 15)) {
-                var y = 270 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                var y = 220 - wageScale(+filteredoccdata[i].A_MEDIAN);
             }
-            else var y = 460 - wageScale(+filteredoccdata[i].A_MEDIAN);
+            else var y = 410 - wageScale(+filteredoccdata[i].A_MEDIAN);
         }
         else if (m < 10 && m >=4) {
             if (ii + 1 <= (m/2)) {
@@ -228,9 +321,9 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             else var x = (((((ii + 1)-(m/2)) * ((width - 100) / (m/2))) + (100 * (Math.random()*(Math.random() < 0.5 ? -1 : 1))))-(((width - 100) / (m/2))/2));
 
             if (ii + 1 <= (m/2)) {
-                var y = 190 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
+                var y = 140 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
             }
-            else var y = 490 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
+            else var y = 440 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
 
         }
         else if (m < 4) {
@@ -468,18 +561,18 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         .force("y", d3.forceY(function (d,i) {
             if (m > 10) {
                 if (d.ii + 1 <= 7) {
-                    return 120 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                    return 70 - wageScale(+filteredoccdata[i].A_MEDIAN);
                 }
                 else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                    return 270 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                    return 220 - wageScale(+filteredoccdata[i].A_MEDIAN);
                 }
-                else return 460 - wageScale(+filteredoccdata[i].A_MEDIAN);
+                else return 410 - wageScale(+filteredoccdata[i].A_MEDIAN);
             }
             else if (m < 10 && m >=4) {
                 if (d.ii + 1 <= (m/2)) {
-                    return 190 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
+                    return 140 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
                 }
-                else return 490 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
+                else return 440 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
             }
             else if (m < 4) {
                     return 260 - 3*wageScale(+filteredoccdata[i].A_MEDIAN);
@@ -506,6 +599,9 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             //d3.select("#blueAxis").style("opacity", newOpacity);
             // Update whether or not the elements are active
             this.active = active;
+            var occSelection = d.OCC_CODE;
+            map.update(mapdata, occdata, occSelection);
+
         })
         .call(d3.drag()
             .on("start", dragstarted)
@@ -565,6 +661,8 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             d3.select(this).attr("class", newClass);
             // Update whether or not the elements are active
             this.active = active;
+            var occSelection = d.OCC_CODE;
+            map.update(mapdata, occdata, occSelection);
         });
 
     var newLabels = labels
@@ -593,18 +691,18 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         .attr('y', function(d,i) {
             if (m > 10) {
                 if (d.ii + 1 <= 7) {
-                    return 180;
+                    return 130;
                 }
                 else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                    return 350 ;
+                    return 300 ;
                 }
-                else return 550;
+                else return 500;
             }
             else if (m < 10 && m >=4) {
                 if (d.ii + 1 <= (m/2)) {
-                    return 330;
+                    return 280;
                 }
-                else return 575;
+                else return 550;
             }
             else if (m < 4) {
                 return 480;
@@ -801,18 +899,18 @@ circles.transition()
      .attr('y', function(d,i) {
          if (m > 10) {
              if (d.ii + 1 <= 7) {
-                 return 180;
+                 return 130;
              }
              else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                 return 350 ;
+                 return 300 ;
              }
-             else return 550;
+             else return 500;
          }
          else if (m < 10 && m >=4) {
              if (d.ii + 1 <= (m/2)) {
-                 return 330;
+                 return 280;
              }
-             else return 575;
+             else return 530;
          }
          else if (m < 4) {
              return 480;
@@ -845,80 +943,8 @@ circles.transition()
         .attr("opacity", 1)
     ;
 
-    var newColorScale = d3.scaleOrdinal()
-        .domain(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'])
-        .range(['#d6d600','#ff7f00','#a65628','#e41a1c','#f781bf','#984ea3','#377eb8','#4daf4a']);
 
-    svg.append('g')
-        .attr('class', 'colorLegend')
-        .attr("transform",
-            "translate(30,10)");
 
-    var legend = d3.legendColor()
-        .scale(newColorScale)
-        .orient('horizontal')
-        .shape('rect')
-        .shapeHeight('25')
-        .shapeWidth('25')
-        .shapePadding('15')
-        //.title("Colored by Education")
-        .labels(["None","High school","Some college","Certificate","Associate's","Bachelor's","Master's","Doctoral"]);
-
-    svg.select(".colorLegend")
-        .call(legend);
-
-    var shadeScale = d3.scaleOrdinal()
-        .domain(['a', 'b', 'c'])
-        .range(['#f0f0f0','#bdbdbd','#636363']);
-
-    svg.append('g')
-        .attr('class', 'shadeLegend')
-        .attr("transform",
-            "translate(450,10)");
-
-    var legend2 = d3.legendColor()
-        .scale(shadeScale)
-        .orient('vertical')
-        .ascending(true)
-        .shape('rect')
-        .shapeHeight('20')
-        .shapeWidth('40')
-        .shapePadding('0')
-        //.title("Colored by Education")
-        .labels(["Low Wage", "Mid Wage", "High Wage"]);
-
-    svg.select(".shadeLegend")
-        .call(legend2);
-
-    svg.select(".sizeLegend").remove();
-    var newRadiusScale = d3.scaleLinear()
-        .domain([0, d3.max(statefilteredoccdata,(function(d,i) {
-            return +d["Average Annual Openings"];
-        }))])
-        .range([4, maxRadius]);
-
-    svg.append('g')
-        .attr('class', 'sizeLegend')
-        .attr("transform",
-            "translate(620,40)");
-
-    var legend3 = d3.legendSize()
-        .scale(newRadiusScale)
-        .orient('horizontal')
-        .shape('circle')
-        .shapePadding('10')
-        //.labels(['a', 'b', 'c' , 'd', 'e']);
-        .labelFormat(d3.format(",.0f"));
-
-    svg.select(".sizeLegend")
-        .call(legend3);
-
-    svg.append('g')
-        .attr("transform",
-            "translate(620,15)")
-        .append('text')
-        .text("Larger circle = more openings ----->")
-        .attr('font-size', '16px');
 
 
 
@@ -1208,21 +1234,24 @@ circles.transition()
             tip.hide(d);
             simulation.stop();
             var clusterSelection = d3.select(this).property('value');
-            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);
-            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart);
-            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart);
-            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, distChart, demandChart);
+            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata);
+            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart, map, mapdata);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart, map, mapdata);
+            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, demandChart, map, mapdata);
         });
 
     d3.select('#stateSelect')
         .on('change', function(d) {
+
             tip.hide(d);
             simulation.stop();
             var stateSelection = d3.select(this).property('value');
-            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart);
-            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart);
-            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart);
-            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings,minGrowth, maxGrowth,  distChart, demandChart);
+            var occSelection = "00-0000";
+            map.update(mapdata, occdata, occSelection);
+            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata);
+            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart, map, mapdata);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart, map, mapdata);
+            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, demandChart, map, mapdata);
         });
 };
 

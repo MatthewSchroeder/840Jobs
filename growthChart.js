@@ -1,5 +1,5 @@
 ﻿
-function GrowthChart(occdata, clusterSelection, stateSelection, clusterChart, distChart, demandChart) {
+function GrowthChart(occdata, clusterSelection, stateSelection, clusterChart, distChart, demandChart, map, mapdata) {
     var self = this;
 
     self.occdata = occdata;
@@ -53,7 +53,7 @@ GrowthChart.prototype.occbars_render = function(hoverData) {
             "translate(" + margin.left + "," + margin.top + ")")
         .append('rect')
         .attr("class", "wageBar")
-        .attr('x', hoverData >= (d3.max(self.data) / 4) ? self.xw(d3.max(self.data) / 4) : self.xw(hoverData))
+        .attr('x', hoverData >= 0.4 ? self.xw(0.4) : self.xw(hoverData))
         .attr('y', -110)
         .attr('width', 3)
         .attr('fill', 'black')
@@ -71,13 +71,13 @@ GrowthChart.prototype.occbars_render = function(hoverData) {
 GrowthChart.prototype.occbars_out = function(){
     var self = this;
 
-    d3.select('.wageBar').remove();
-    d3.select('.wageLabel').remove();
+    d3.selectAll('.wageBar').remove();
+    d3.selectAll('.wageLabel').remove();
 
 }
 
 
-GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, demandChart) {
+GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, demandChart, map, mapdata) {
     var self = this;
     var margin = {top: 50, right: 0, bottom: 10, left: 130};
     //console.log(stateSelection);
@@ -126,7 +126,7 @@ GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelectio
     //console.log(thresholds);
     // group the data for the bars
     var bins = d3.histogram()
-        .domain([0,d3.max(self.data)])
+        .domain([0,5])
         .thresholds(thresholds)//(5000), xw(10000), xw(15000), xw(20000), xw(25000), xw(30000), xw(35000), xw(40000), xw(45000), xw(50000), xw(55000), xw(60000), xw(65000), xw(70000), xw(75000), xw(80000), xw(85000), xw(90000), xw(95000), xw(100000))
         (self.data);
 
@@ -259,9 +259,9 @@ GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         console.log(minGrowth);
         console.log(maxGrowth);
 
-        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, self)
-        distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, self)
-        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, self)
+        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, self, map, mapdata)
+        distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, self, map, mapdata)
+        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, self, map, mapdata)
     }
 
 

@@ -1,5 +1,5 @@
 ﻿
-function DemandChart(occdata, clusterSelection, stateSelection, clusterChart, distChart, growthChart) {
+function DemandChart(occdata, clusterSelection, stateSelection, clusterChart, distChart, growthChart, map, mapdata) {
     var self = this;
 
     self.occdata = occdata;
@@ -53,7 +53,7 @@ self.svg
         "translate(" + margin.left + "," + margin.top + ")")
     .append('rect')
         .attr("class", "wageBar")
-        .attr('x', hoverData >= (d3.max(self.data)/10) ? self.xw(d3.max(self.data)/10) : self.xw(hoverData))
+        .attr('x', hoverData >= (d3.max(self.data)/20) ? self.xw(d3.max(self.data)/20) : self.xw(hoverData))
         .attr('y', -110)
         .attr('width', 3)
         .attr('fill', 'black')
@@ -71,13 +71,13 @@ self.svg
 DemandChart.prototype.occbars_out = function(){
     var self = this;
 
-    d3.select('.wageBar').remove();
-    d3.select('.wageLabel').remove();
+    d3.selectAll('.wageBar').remove();
+    d3.selectAll('.wageLabel').remove();
 
 }
 
 
-DemandChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, growthChart) {
+DemandChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, growthChart, map, mapdata) {
     var self = this;
     var margin = {top: 50, right: 0, bottom: 10, left: 130};
     //console.log(stateSelection);
@@ -113,16 +113,16 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
 
     // set the ranges
     self.xw = d3.scaleLinear()
-        .domain([0,(d3.max(self.data)/10)])
+        .domain([0,(d3.max(self.data)/20)])
         .rangeRound([0, width]);
 
    // console.log(d3.max(self.data));
 
     var xwReverse = d3.scaleLinear()
         .domain([0, width])
-        .rangeRound([0, (d3.max(self.data)/10)]);
+        .rangeRound([0, (d3.max(self.data)/20)]);
 
-    var thresholds = d3.range(0, d3.max(self.data)/10, (d3.max(self.data)/10)/((d3.max(self.data)/10) > 200 ? 20:((d3.max(self.data)/10) > 100 ? 10:5)));
+    var thresholds = d3.range(0, d3.max(self.data)/20, (d3.max(self.data)/20)/((d3.max(self.data)/20) > 200 ? 20:((d3.max(self.data)/20) > 100 ? 10:5)));
     //console.log(thresholds);
     // group the data for the bars
     var bins = d3.histogram()
@@ -254,14 +254,14 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
        // console.log(xwReverse(s[0])-1800);
        // console.log(xwReverse(s[1])-1800);
         var minOpenings = self.xw.invert(s[0]- 130),//-1800,
-            maxOpenings = self.xw.invert(s[1]-130) >= (d3.max(self.data)/10) ? 200000 : self.xw.invert(s[1]-130);
+            maxOpenings = self.xw.invert(s[1]-130) >= (d3.max(self.data)/20) ? 200000 : self.xw.invert(s[1]-130);
 
         console.log(minOpenings);
         console.log(maxOpenings);
 
-        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, self, growthChart)
-        distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart)
-        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, self)
+        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, self, growthChart, map, mapdata)
+        distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart, map, mapdata)
+        growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, self, map, mapdata)
     }
 
 

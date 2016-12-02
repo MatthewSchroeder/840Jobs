@@ -63,9 +63,10 @@ Map.prototype.init = function(){
 Map.prototype.tooltip_render = function(tooltip_data3) {
     var self = this;
     console.log(tooltip_data3);
+    var format = d3.format(",.0f");
 
     var text = "<div style='width:75%; float:left;'><h3>Projected Annual Openings for " + tooltip_data3.OCC_TITLE + " in " + tooltip_data3.STATE + ": </h3></div>";
-    text += "<div style='width:25%; float:right;'><p style='text-align: center' class = 'tipNumber'>" + tooltip_data3["Average Annual Openings"] + "</p></div>";
+    text += "<div style='width:25%; float:right;'><p style='text-align: center' class = 'tipNumber'>" + format(+tooltip_data3["Average Annual Openings"]) + "</p></div>";
    // text +=  "<h2 class = 'tooltip-title'>Projected Annual Openings in " +tooltip_data.STATE + ":  " + tooltip_data["Average Annual Openings"] + "</h2>";
     return text;
 }

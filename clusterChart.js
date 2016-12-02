@@ -1,5 +1,5 @@
 ﻿
-function ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata) {
+function ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata, map2) {
     var self = this;
 
     self.occdata = occdata;
@@ -184,7 +184,7 @@ ClusterChart.prototype.tooltip_render2 = function(tooltip_data2) {
 
 
 
-ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata){
+ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata, map2){
     var self = this;
 
     var filteredoccdata = occdata
@@ -601,6 +601,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             this.active = active;
             var occSelection = d.OCC_CODE;
             map.update(mapdata, occdata, occSelection);
+            map2.update(mapdata, occdata, occSelection);
 
         })
         .call(d3.drag()
@@ -663,6 +664,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             this.active = active;
             var occSelection = d.OCC_CODE;
             map.update(mapdata, occdata, occSelection);
+            map2.update(mapdata, occdata, occSelection);
         });
 
     var newLabels = labels
@@ -1234,10 +1236,10 @@ circles.transition()
             tip.hide(d);
             simulation.stop();
             var clusterSelection = d3.select(this).property('value');
-            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata);
-            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart, map, mapdata);
-            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart, map, mapdata);
-            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, demandChart, map, mapdata);
+            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata, map2);
+            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart, map, mapdata, map2);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart, map, mapdata, map2);
+            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, demandChart, map, mapdata, map2);
         });
 
     d3.select('#stateSelect')
@@ -1248,10 +1250,11 @@ circles.transition()
             var stateSelection = d3.select(this).property('value');
             var occSelection = "00-0000";
             map.update(mapdata, occdata, occSelection);
-            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata);
-            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart, map, mapdata);
-            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart, map, mapdata);
-            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, demandChart, map, mapdata);
+            map2.update(mapdata, occdata, occSelection);
+            self.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata, map2);
+            distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart, map, mapdata, map2);
+            demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, growthChart, map, mapdata, map2);
+            growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, demandChart, map, mapdata, map2);
         });
 };
 

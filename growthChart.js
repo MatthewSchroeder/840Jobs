@@ -1,5 +1,5 @@
 ﻿
-function GrowthChart(occdata, clusterSelection, stateSelection, clusterChart, distChart, demandChart, map, mapdata) {
+function GrowthChart(occdata, clusterSelection, stateSelection, clusterChart, distChart, demandChart, map, mapdata, map2) {
     var self = this;
 
     self.occdata = occdata;
@@ -77,7 +77,7 @@ GrowthChart.prototype.occbars_out = function(){
 }
 
 
-GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, demandChart, map, mapdata) {
+GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, demandChart, map, mapdata, map2) {
     var self = this;
     var margin = {top: 50, right: 0, bottom: 10, left: 130};
     //console.log(stateSelection);
@@ -259,9 +259,9 @@ GrowthChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         console.log(minGrowth);
         console.log(maxGrowth);
 
-        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, self, map, mapdata)
-        distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, self, map, mapdata)
-        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, self, map, mapdata)
+        clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, self, map, mapdata, map2)
+        distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, self, map, mapdata, map2)
+        demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, self, map, mapdata, map2)
     }
 
 

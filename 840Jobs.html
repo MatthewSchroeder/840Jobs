@@ -22,25 +22,15 @@
 <!-- Begin Navbar -->
 <div id="nav" style ="font-family:BenchNine;">
     <nav class="navbar navbar-inverse" data-spy="affix" data-offset-top="197">
-        <div class="container">
+        <div class="container-fluid">
 
             <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-            <a href="#" class="navbar-brand">Brand</a>
-            <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="glyphicon glyphicon-bar"></span>
-                <span class="glyphicon glyphicon-bar"></span>
-                <span class="glyphicon glyphicon-bar"></span>
-            </a>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="#">Link</a></li>
 
-                </ul>
-                <ul class="nav pull-right navbar-nav"></ul>
+                <ul class="nav pull-left navbar-nav"></ul>
 
-                        <form class="navbar-form form-inline">
+                        <form class="navbar-form navbar-left">
                             <div class="form-group">
-                                <label for ="stateSelect" id="selectLabels">Select a State:</label>
+                                <label for ="stateSelect" id="selectLabels">Choose a State:</label>
                                 <select class = "form-control stateSelect" id="stateSelect" style="font-size: 18px;">
                                     <option value="United States"  selected="selected">United States</option>
                                     <option value="Alabama">Alabama</option>
@@ -114,8 +104,22 @@
                                 <button type="submit" class="btn btn-default"><i class="glyphicon glyphicon-search"></i></button>
                             </div>-->
                         </form>
+
                 </ul>
-            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="840Jobs_ProcessBook.pdf" style="font-size: 24px;">Process Book</a></li>
+                <!--<li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </li>-->
+            </ul>
+
         </div>
     </nav><!-- /.navbar -->
 </div>
@@ -235,7 +239,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
-                            Understanding the Custer Chart</a>
+                            How to Explore and Compare Using the Custer Chart</a>
                     </h4>
                 </div>
                 <div id="collapse3" class="panel-collapse collapse">
@@ -248,7 +252,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
-                            Understanding the Histograms (the green bar charts)</a>
+                            How to Interpret and Filter With the Histograms (the green bar charts)</a>
                     </h4>
                 </div>
                 <div id="collapse4" class="panel-collapse collapse">
@@ -261,7 +265,7 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">
-                            Understanding the Maps</a>
+                            How to Update and Understand the Maps</a>
                     </h4>
                 </div>
                 <div id="collapse5" class="panel-collapse collapse">
@@ -350,6 +354,7 @@
 <script type="application/javascript" src="demandChart.js"></script>
 <script type="application/javascript" src="growthChart.js"></script>
 <script type="application/javascript" src="map.js"></script>
+<script type="application/javascript" src="map2.js"></script>
 <!--<script type="application/javascript" src="stateChart.js"></script>
 <script type="application/javascript" src="infoPanel.js"></script>-->
 <script type="application/javascript" src="main.js"></script>

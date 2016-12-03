@@ -9,7 +9,6 @@ function DemandChart(occdata, clusterSelection, stateSelection, clusterChart, di
     self.init();
 };
 
-
 DemandChart.prototype.init = function(){
 
     var self = this;
@@ -17,29 +16,14 @@ DemandChart.prototype.init = function(){
     var divdemandChart = d3.select("#demandChart").classed("oChart", true);
 
     self.svgBounds = divdemandChart.node().getBoundingClientRect();
-    self.svgWidth = 400;//self.svgBounds.width - self.margin.left - self.margin.right);
+    self.svgWidth = 400;
     self.svgHeight = 190;
 
 
     self.svg = d3.select('#demandChart').append("svg")
         .attr("width",self.svgWidth)
         .attr("height",self.svgHeight);
-        //.attr(("x", (self.svgBounds.width - self.margin.left - self.margin.right)-self.svgWidth));
 };
-
-
-/**YearChart.prototype.chooseClass = function (party) {
-    var self = this;
-    if (party == "R") {
-        return "yearChart republican";
-    }
-    else if (party == "D") {
-        return "yearChart democrat";
-    }
-    else if (party == "I") {
-        return "yearChart independent";
-    }
-}**/
 
 DemandChart.prototype.occbars_render = function(hoverData){
     var self = this;
@@ -76,20 +60,17 @@ DemandChart.prototype.occbars_out = function(){
 
 }
 
-
 DemandChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, growthChart, map, mapdata, map2) {
     var self = this;
     var margin = {top: 50, right: 0, bottom: 10, left: 130};
-    //console.log(stateSelection);
 
     var width = self.svgWidth - 150,
         height = self.svgHeight,
         chartHeight = 200,
-        padding = 5, // separation between same-color circles
-        clusterPadding = 8, // separation between different-color circles
+        padding = 5, 
+        clusterPadding = 8, 
         maxBarHeight = 100;
-
-
+    
     var filteredoccdata = occdata
         .filter(function (d) {
             return ((d["STATE"] == "" + stateSelection + "") && (d["OCC_GROUP"] == "detailed"));
@@ -99,39 +80,27 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
     filteredoccdata.map(function (d) {
         self.data.push(+d["Average Annual Openings"]);
     });
-    //console.log(self.data);
 
     var formatCount = d3.format(",.0f");
-
-    // append a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
 
     var group = self.svg.append("g")
         .attr("class", 'demandChart')
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
-
-    // set the ranges
+    
     self.xw = d3.scaleLinear()
         .domain([0,(d3.max(self.data)/20)])
         .rangeRound([0, width]);
-
-   // console.log(d3.max(self.data));
 
     var xwReverse = d3.scaleLinear()
         .domain([0, width])
         .rangeRound([0, (d3.max(self.data)/20)]);
 
     var thresholds = d3.range(0, d3.max(self.data)/20, (d3.max(self.data)/20)/((d3.max(self.data)/20) > 200 ? 20:((d3.max(self.data)/20) > 100 ? 10:5)));
-    //console.log(thresholds);
-    // group the data for the bars
     var bins = d3.histogram()
         .domain([0,d3.max(self.data)])
-        .thresholds(thresholds)//(5000), xw(10000), xw(15000), xw(20000), xw(25000), xw(30000), xw(35000), xw(40000), xw(45000), xw(50000), xw(55000), xw(60000), xw(65000), xw(70000), xw(75000), xw(80000), xw(85000), xw(90000), xw(95000), xw(100000))
+        .thresholds(thresholds)
         (self.data);
-
-    //console.log(bins);
-
 
     var yw = d3.scaleLinear()
         .domain([0, d3.max(bins, function (d) {
@@ -143,20 +112,13 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         .filter(function (d) {
             return ((d["STATE"] == "" + stateSelection + "") && (d["OCC_GROUP"] == "total"));
         });
-    var avgAnnOpenings = d3.median(self.data);//totalData[0]["Average Annual Openings"]/data.length;
-
-    //console.log(totalData[0]["Average Annual Openings"]);
-    //console.log(self.data.length);
-    //console.log(avgAnnOpenings);
+    var avgAnnOpenings = d3.median(self.data);
 
     self.svg.selectAll('rect').transition().duration(2000).attr('opacity', 0).remove();
     self.svg.selectAll('text').transition().duration(2000).attr('opacity', 0).remove();
 
-    var bar = group.selectAll('.bar').data(bins);/*, function (d) {
-            return d;
-        });*/
+    var bar = group.selectAll('.bar').data(bins);
 
-    // append the bar rectangles to the svg element
     var barEnter = bar.enter()
         .append("rect")
         .attr("class", "bar")
@@ -202,18 +164,15 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         .text("Median " + d3.format(",.0f")(avgAnnOpenings))
         .attr("transform", "translate(0," + maxBarHeight + ")")
         .call(wrap,40);
-
-
-
+    
     function wrap(text, width) {
         text.each(function () {
-            //console.log(this);
             var text = d3.select(this),
                 words = text.text().split(/\s+/).reverse(),
                 word,
                 line = [],
                 lineNumber = 0,
-                lineHeight = 1.1, // ems
+                lineHeight = 1.1, 
                 x = text.attr('x'),
                 y = text.attr("y"),
                 dy = parseFloat(text.attr("dy")),
@@ -246,31 +205,17 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
             .on("end", brushed)
         );
 
-
     function brushed() {
         if (!d3.event.sourceEvent) return; // Only transition after input.
         if (!d3.event.selection) return; // Ignore empty selections.
         var s = d3.event.selection;
-       // console.log(xwReverse(s[0])-1800);
-       // console.log(xwReverse(s[1])-1800);
-        var minOpenings = self.xw.invert(s[0]- 130),//-1800,
+        var minOpenings = self.xw.invert(s[0]- 130),
             maxOpenings = self.xw.invert(s[1]-130) >= (d3.max(self.data)/20) ? 200000 : self.xw.invert(s[1]-130);
-
-        console.log(minOpenings);
-        console.log(maxOpenings);
 
         clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, self, growthChart, map, mapdata, map2)
         distChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart, map, mapdata, map2)
         growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, self, map, mapdata, map2)
     }
-
-
-
-
-
-
-
-
 
     // add the x Axis
 
@@ -282,14 +227,6 @@ DemandChart.prototype.update = function(occdata, clusterSelection, stateSelectio
         .call(d3.axisBottom(self.xw).ticks(5).tickFormat(function(d) {
             return d3.format(",.0f")(d);
         }));
-
-
-   // xAxis.ticks(4);
-
-    // add the y Axis
-  //  g.append("g")
-    //    .call(d3.axisLeft(yw))
-
 };
 
 

@@ -9,7 +9,6 @@ function DistChart(occdata, clusterSelection, stateSelection, clusterChart, dema
     self.init();
 };
 
-
 DistChart.prototype.init = function(){
 
     var self = this;
@@ -17,7 +16,7 @@ DistChart.prototype.init = function(){
     var divdistChart = d3.select("#distChart").classed("dChart", true);
 
     self.svgBounds = divdistChart.node().getBoundingClientRect();
-    self.svgWidth = 400;//self.svgBounds.width - self.margin.left - self.margin.right);
+    self.svgWidth = 400;
     self.svgHeight = 190;
 
 
@@ -25,22 +24,7 @@ DistChart.prototype.init = function(){
         .attr("width",self.svgWidth)
         .attr("height",self.svgHeight)
         .attr('align', top);
-        //.attr(("x", (self.svgBounds.width - self.margin.left - self.margin.right)-self.svgWidth));
 };
-
-
-/**YearChart.prototype.chooseClass = function (party) {
-    var self = this;
-    if (party == "R") {
-        return "yearChart republican";
-    }
-    else if (party == "D") {
-        return "yearChart democrat";
-    }
-    else if (party == "I") {
-        return "yearChart independent";
-    }
-}**/
 
 DistChart.prototype.occbars_render = function(hoverData){
     var self = this;
@@ -71,28 +55,24 @@ self.svg
         .attr('y', 110)
         .attr('dy', 0)
         .text("$" + d3.format(".2s")(hoverData));
-        //.attr("transform", "translate(0," + maxBarHeight + ")");
 }
 
 DistChart.prototype.occbars_out = function(){
     var self = this;
-
     d3.selectAll('.wageBar').remove();
     d3.selectAll('.wageLabel').remove();
 
 }
 
-
 DistChart.prototype.update = function(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, growthChart, map, mapdata, map2) {
     var self = this;
     var margin = {top: 50, right: 0, bottom: 10, left: 130};
-   // console.log(stateSelection);
 
     var width = self.svgWidth - 150,
         height = self.svgHeight,
         chartHeight = 200,
-        padding = 5, // separation between same-color circles
-        clusterPadding = 8, // separation between different-color circles
+        padding = 5, 
+        clusterPadding = 8, 
         maxBarHeight = 100;
 
 
@@ -107,9 +87,6 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
     });
 
     var formatCount = d3.format(",.0f");
-
-    // append a 'group' element to 'svg'
-    // moves the 'group' element to the top left margin
 
     var group = self.svg.append("g")
         .attr("class", 'wageChart')
@@ -126,13 +103,11 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
         .rangeRound([0, 100000]);
 
     var thresholds = d3.range(0, 100000, 5000)
-   // console.log(thresholds);
-    // group the data for the bars
+
     var bins = d3.histogram()
         .domain([0,200000])
-        .thresholds(thresholds)//(5000), xw(10000), xw(15000), xw(20000), xw(25000), xw(30000), xw(35000), xw(40000), xw(45000), xw(50000), xw(55000), xw(60000), xw(65000), xw(70000), xw(75000), xw(80000), xw(85000), xw(90000), xw(95000), xw(100000))
+        .thresholds(thresholds)
         (data);
-   // console.log(bins);
 
     var yw = d3.scaleLinear()
         .domain([0, d3.max(bins, function (d) {
@@ -146,16 +121,11 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
         });
     var median = totalData[0].A_MEDIAN;
 
-    //console.log(median);
-
     self.svg.selectAll('rect').transition().duration(2000).attr('opacity', 0).remove();
     self.svg.selectAll('text').transition().duration(2000).attr('opacity', 0).remove();
 
-    var bar = group.selectAll('.bar').data(bins);/*, function (d) {
-            return d;
-        });*/
-
-    // append the bar rectangles to the svg element
+    var bar = group.selectAll('.bar').data(bins);
+    
     var barEnter = bar.enter()
         .append("rect")
         .attr("class", "bar")
@@ -206,7 +176,6 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
 
     function wrap(text, width) {
         text.each(function () {
-            //console.log(this);
             var text = d3.select(this),
                 words = text.text().split(/\s+/).reverse(),
                 word,
@@ -247,27 +216,16 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
 
 
     function brushed() {
-        if (!d3.event.sourceEvent) return; // Only transition after input.
-        if (!d3.event.selection) return; // Ignore empty selections.
+        if (!d3.event.sourceEvent) return; 
+        if (!d3.event.selection) return; 
         var s = d3.event.selection;
         var minWage = xw.invert(s[0]-130),
             maxWage = xw.invert(s[1]-130) >= 100000 ? 200000: xw.invert(s[1]-130);
-
-      console.log(minWage);
-      console.log(maxWage);
 
         clusterChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, demandChart, growthChart, map, mapdata, map2)
         demandChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, growthChart, map, mapdata, map2)
         growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, self, demandChart, map, mapdata, map2)
     }
-
-
-
-
-
-
-
-
 
     // add the x Axis
     var xAxis = group.append("g")
@@ -275,12 +233,6 @@ DistChart.prototype.update = function(occdata, clusterSelection, stateSelection,
         .call(d3.axisBottom(xw).ticks(5).tickFormat(function(d) {
             return "$" + d3.format(".2s")(d);
         }));
-
-   // xAxis.ticks(4);
-
-    // add the y Axis
-  //  g.append("g")
-    //    .call(d3.axisLeft(yw))
 
 };
 

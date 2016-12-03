@@ -217,21 +217,8 @@ option {
 .clusterSelect option {
     font-size: 20px;
 }
-
-.electoralVotesNote, .votesPercentageNote{
-    text-anchor:middle;
-    font-size: 20px;
-}
-
-.electoralVoteText, .votesPercentageText{
-    font-size: 30px;
-}
 .end{
     text-anchor:end;
-}
-
-.nomineeInfoText{
-    font-size: 36px;
 }
 .Axis{
     stroke: #eee;
@@ -248,9 +235,6 @@ option {
     float:right;
 }
 
-.electoralVotes{
-    stroke: #eee;
-}
 
 .middlePoint{
     stroke: #eee;
@@ -277,35 +261,6 @@ option {
     width:320px;
     display:table-cell;
 
-}
-
-.yearChart{
-    stroke: #FFF;
-}
-
-.republican{
-    fill: #de2d26;
-    color: #de2d26;
-    text-anchor:end;
-}
-.democrat{
-    fill: #3182bd;
-    text-anchor:start;
-    color: #3182bd;
-}
-.democrat2{
-    fill: #3182bd;
-    text-anchor:end;
-    color: #3182bd;
-}
-.independent{
-    fill: #45AD6A;
-    color: #45AD6A;
-    text-anchor:start;
-}
-
-.votesPercentage{
-    stroke: #eee;
 }
 
 .highlighted{

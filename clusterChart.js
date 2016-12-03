@@ -119,19 +119,6 @@ ClusterChart.prototype.init = function(occdata, stateSelection){
 };
 
 
-/**YearChart.prototype.chooseClass = function (party) {
-    var self = this;
-    if (party == "R") {
-        return "yearChart republican";
-    }
-    else if (party == "D") {
-        return "yearChart democrat";
-    }
-    else if (party == "I") {
-        return "yearChart independent";
-    }
-}**/
-
 ClusterChart.prototype.tooltip_render = function(tooltip_data) {
     var self = this;
     var text = "<span id='close' onclick='tip.hide()' style = 'float: right;'><b style = 'font-size: 30px;'>&times</b></span>";
@@ -161,15 +148,6 @@ ClusterChart.prototype.tooltip_render = function(tooltip_data) {
                                             text += "<li>" + tooltip_data.RJDescr_10 + "</li>";
     }}}}}}}}}}
     else text += "<li>None identified</li>";
-        /*text += "<li>" + tooltip_data.RJDescr_2 + "</li>"
-        text += "<li>" + tooltip_data.RJDescr_3 + "</li>"
-        text += "<li>" + tooltip_data.RJDescr_4 + "</li>"
-        text += "<li>" + tooltip_data.RJDescr_5 + "</li>"
-        text += "<li>" + tooltip_data.RJDescr_6 + "</li>"
-        text += "<li>" + tooltip_data.RJDescr_7 + "</li>"
-        text += "<li>" + tooltip_data.RJDescr_8 + "</li>"
-        text += "<li>" + tooltip_data.RJDescr_9 + "</li>"
-        text += "<li>" + tooltip_data.RJDescr_10 + "</li>"*/
     text += "</ul>";
     return text;
 }
@@ -200,24 +178,20 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
     var margin = {top: 10, right: 10, bottom: 10, left: 10},
         width = self.svgWidth +60,
         height = self.svgHeight,
-        padding = 5, // separation between same-color circles
-        clusterPadding = 8, // separation between different-color circles
+        padding = 5,
+        clusterPadding = 8, 
         maxRadius = 30;
 
     var hueScale = d3.scaleOrdinal(d3.schemeCategory20);
 
     var saturationScale = d3.scaleQuantize()
         .domain([0, 30000, 60000])
-        //d3.max(filteredoccdata,(function(d,i) {
-        //return +d["A_MEDIAN"];
-        //}))])
         .range(['#f1eef6','#d4b9da','#c994c7','#df65b0','#dd1c77','#980043']);
 
 
     var colorScale = d3.scaleOrdinal()
         .domain(['No formal educational credential','High school diploma or equivalent','Some college, no degree','Postsecondary nondegree award',"Associate's degree","Bachelor's degree","Master's degree",'Doctoral or professional degree'])
         .range(['#d6d600','#ff7f00','#a65628','#e41a1c','#f781bf','#984ea3','#377eb8','#4daf4a']);//(d3.schemeCategory10);
-    console.log(colorScale.domain());
 
     var radiusScale = d3.scaleLinear()
         .domain([0, d3.max(statefilteredoccdata,(function(d,i) {
@@ -227,14 +201,10 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
 
     var wageColorScale = d3.scaleQuantile()
         .domain([0,20000, 40000, 60000, 80000, 100000])
-            //d3.max(filteredoccdata,(function(d,i) {
-            //return +d["A_MEDIAN"];
-        //}))])
         .range(['#f1eef6','#d4b9da','#c994c7','#df65b0','#dd1c77','#980043']);
 
     var wageScale = d3.scaleThreshold()
         .domain([30000, 60000, 1000000])
-       //.domain([d3.min(filteredoccdata,(function(d,i) {return +d["A_MEDIAN"];})), d3.max(filteredoccdata,(function(d,i) {return +d["A_MEDIAN"];})) ])
             .range([-20, 0, 20]);
 
     var clusterarray = [];
@@ -247,15 +217,9 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
     clusterarray = clusterarray.filter(function(d){
         return d != "";
     });
-   ////console.log(clusterarray);
+
     var clusters = new Array(clusterarray.length),
-        m = d3.max(clusterarray);//clusterarray.length;
-
-   ////console.log(clusterSelection);
-
-   ////console.log(m);
-
-
+        m = d3.max(clusterarray);
 
     var occs = [];
     filteredoccdata.map(function (d){
@@ -508,7 +472,6 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             };
         if (!clusters[ii] || (r > clusters[ii].r)) {
             clusters[ii] = d;
-            //clusters[ii].CLUSTER_NODE = 'YES';
         };
         return d;
 
@@ -518,26 +481,11 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         return d != undefined;
     });
 
-    ////console.log(clusters);
-
-
-
     var simulation = d3.forceSimulation(nodes)
-         // .alpha(1)
-        /*.force("cluster", d3.forceCluster()
-         .centers(function (d){
-         ////console.log(clusters[0]);
-         ////console.log(d.ii);
-         return clusters[d.ii];
-         })
-         .strength(0.5)
-         .centerInertia(0.01))
-        //.velocityDecay(.2)*/
            .force("collide", d3.forceCollide().radius(function(d) { return d.r + 1; })
               .iterations(10)
               .strength(.3)
            )
-          // .force("manybody", d3.forceManyBody().strength(function(d) { return (-2); }))
         .force("x", d3.forceX(function (d,i) {
             if (m > 10) {
                 if (d.ii + 1 <= 7) {
@@ -578,13 +526,10 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
                     return 260 - 3*wageScale(+filteredoccdata[i].A_MEDIAN);
             }})
             .strength(.1))
-
           .on('tick', ticked)
     // ;
 
   simulation.stop();
-
-//console.log(m);
 
     var circles = svg.selectAll('.circles').data(nodes, function(d){
                 return d.ID;
@@ -594,10 +539,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             this.active ? tip.hide(d) : tip.show(d);
             var active   = this.active ? false : true,
                 newClass = active ? 'circles highlight' : 'circles';
-            // Hide or show the elements
             d3.select(this).attr("class", newClass);
-            //d3.select("#blueAxis").style("opacity", newOpacity);
-            // Update whether or not the elements are active
             this.active = active;
             var occSelection = d.OCC_CODE;
             map.update(mapdata, occdata, occSelection);
@@ -611,14 +553,8 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
 
     ;
 
-   // var labels = svg.selectAll('.clusterLabels').transition().duration(1000).attr('opacity', 0).remove();
-
     var labels = svg.selectAll('.clusterLabels')
         .data(clusters);
-        /*.filter(function(d) {
-            return d.CLUSTER_NODE == 'YES';
-        });*/
-//console.log(labels);
 
     var newCircles = circles
             .enter()
@@ -645,9 +581,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             demandChart.occbars_render(avgOpenings);
             growthChart.occbars_render(medianGrowthRate);
             tip2.show(d);
-            //wage_render
         })
-        //.on('mouseover', tip.show)
         .on('mouseout', function(d){
             distChart.occbars_out();
             demandChart.occbars_out();
@@ -658,9 +592,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             this.active ? tip.hide(d) : tip.show(d);
             var active   = this.active ? false : true,
                 newClass = active ? 'circles highlight' : 'circles';
-            // Hide or show the elements
             d3.select(this).attr("class", newClass);
-            // Update whether or not the elements are active
             this.active = active;
             var occSelection = d.OCC_CODE;
             map.update(mapdata, occdata, occSelection);
@@ -732,13 +664,7 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         .call(wrap, (m >10 ? 100 : 150))
         .attr("opacity", 0);
 
-       // svg.selectAll('.clusterLabels')
-
-
-
-
     newCircles.transition()
-        //.on('end', simulation.restart)
             .duration(3000)
             .attr('r', function(d) {
                 return d.r;
@@ -762,75 +688,13 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
             })
        .on('end', function(d){
            callTip(d);
-          // callWrap();
            simStart(d);
        });
 
     newLabels.transition()
         .duration(8000)
-        /*.attr('x', function(d,i) {
-            if (m > 10) {
-                if (d.ii + 1 <= 7) {
-                    return (((d.ii + 1) * ((width - 100) / 7))-(((width - 100) / 7)/2));
-                }
-                else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                    return ((((d.ii + 1) - 7) * ((width - 100) / 8))-(((width - 100) / 8)/2));
-                }
-                else return ((((d.ii + 1) - 15) * ((width - 100) / 7))-(((width - 100) / 7)/2));
-            }
-            else if (m < 10 && m >=5) {
-                if (d.ii + 1 <= (m/2)) {
-                    return ((((d.ii + 1) * ((width - 100) / (m/2))))-(((width - 100) / (m/2))/2));
-                }
-                else return ((((d.ii + 1) -(m/2)) * ((width - 100) / (m/2)))+(((width - 100) / (m/2))/2));
-            }
-            else if (m < 5) {
-                return (((((d.ii + 1) * ((width - 100) / m))) - (((width - 100) / (m)) / 2)));
-            }})
-        .attr('y', function(d,i) {
-            if (m > 10) {
-                if (d.ii + 1 <= 7) {
-                    return 280;
-                }
-                else if (((d.ii + 1) > 7) && ((d.ii + 1) <= 15)) {
-                    return 580 ;
-                }
-                else return 880;
-            }
-            else if (m < 10 && m >=5) {
-                if (d.ii + 1 <= (m/2)) {
-                    return 430 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
-                }
-                else return 880 - 2*wageScale(+filteredoccdata[i].A_MEDIAN);
-            }
-            else if (m < 5) {
-                return 880 - 3*wageScale(+filteredoccdata[i].A_MEDIAN);
-            }})
-        .attr('dy', 0)
-        .text(function(d){
-            if (clusterSelection = "MajorGroup") {
-                return d.MAJOR_GROUP_DESCR;
-            }
-            else if (clusterSelection = "Education") {
-                return d.EDUCATION;
-            }
-            else if (clusterSelection = "STEM") {
-                return d.STEM;
-            }
-            else if (clusterSelection = "Training") {
-                return d.TRAINING;
-            }
-            else if (clusterSelection = "Experience") {
-                return d.EXPERIENCE;
-            }})*/
         .attr("opacity", 1)
         ;
-
-  //  svg.selectAll('.clusterLabels')
-    //    .call(wrap, 300);
-
-
-
 
     circles.exit()
         .style("opacity", 1)
@@ -844,11 +708,8 @@ ClusterChart.prototype.update = function(occdata, clusterSelection, stateSelecti
         .style("opacity",0)
         .remove();
 
-
-
 circles.transition()
         .duration(3000)
-
         .attr('r', function(d) {
             return d.r;
         })
@@ -872,7 +733,6 @@ circles.transition()
 
     .on('end', function(d){
         callTip(d);
-        //callWrap();
         simStart(d);
     });
 
@@ -945,15 +805,8 @@ circles.transition()
         .attr("opacity", 1)
     ;
 
-
-
-
-
-
-
     tip = d3.tip().attr('class', 'd3-tip')
         .direction(function(d){
-            console.log(d.x);
             if (d.x >=500){
                 return 'sw';
             }
@@ -966,8 +819,6 @@ circles.transition()
            return (d.y >= 250 ? [-300, 0]:[-100,0]);
         })
         .html(function (d) {
-            //if (d.OCC_TITLE !== " ") {
-            // ////console.log(d.I_Nominee_prop)
             tooltip_data = {
                 "State" : d.STATE,
                 "Occupation Title": d.OCC_TITLE,
@@ -1038,63 +889,14 @@ circles.transition()
                 RJDescr_51 : d.RJDescr_51,
                 RJDescr_52 : d.RJDescr_52,
                 RJDescr_53 : d.RJDescr_53
-                /*"winner": d.State_Winner,
-                 "electoralVotes": d.Total_EV,
-                 "result": [
-                 {
-                 "nominee": d.D_Nominee_prop,
-                 "votecount": d3.format(',')(d.D_Votes),
-                 "percentage": d.D_Percentage,
-                 "party": "D"
-                 },
-                 {
-                 "nominee": d.R_Nominee_prop,
-                 "votecount": d3.format(',')(d.R_Votes),
-                 "percentage": d.R_Percentage,
-                 "party": "R"
-                 },
-                 {
-                 "nominee": d.I_Nominee_prop,
-                 "votecount": d3.format(',')(d.I_Votes),
-                 "percentage": d.I_Percentage,
-                 "party": "I"
-                 }
-                 ]*/
             }
-            //}
-            /*else {
-             tooltip_data = {
-             "state": d.State,
-             "winner": d.State_Winner,
-             "electoralVotes": d.Total_EV,
-             "result": [
-             {
-             "nominee": d.D_Nominee_prop,
-             "votecount": d3.format(',')(d.D_Votes),
-             "percentage": d.D_Percentage,
-             "party": "D"
-             },
-             {
-             "nominee": d.R_Nominee_prop,
-             "votecount": d3.format(',')(d.R_Votes),
-             "percentage": d.R_Percentage,
-             "party": "R"
-             }
-             ]
-             }
-             }*/
 
-
-            /* pass this as an argument to the tooltip_render function then,
-             * return the HTML content returned from that method.
-             * */
             var html = ClusterChart.prototype.tooltip_render(tooltip_data)
             return html;
         });
 
     tip2 = d3.tip().attr('class', 'd3-tip')
         .direction(function(d){
-            console.log(d.x);
             if (d.x >=500){
                 return 'sw';
             }
@@ -1104,8 +906,6 @@ circles.transition()
 
         })
         .html(function (d) {
-            //if (d.OCC_TITLE !== " ") {
-            // ////console.log(d.I_Nominee_prop)
             tooltip_data2 = {
                 "State": d.STATE,
                 "Occupation Title": d.OCC_TITLE,
@@ -1128,28 +928,7 @@ circles.transition()
             var html = ClusterChart.prototype.tooltip_render2(tooltip_data2)
             return html;
         });
-
-        ////console.log(d3.selectAll('.clusterLabels text').call(wrap, 300));
-    // .call(wrap, 300);
-
-
-  // d3.selectAll('.clusterLabels').call(wrap, 200);
-        //.on('end', callWrap);
-    //d3.selectAll('.clusterLabels').call(wrap,300);
-
-
-    //labelSelection.call(wrap,300);
-    ////console.log(labelSelection);
-
-   // transition.on('end', simStart);
-
-    //labels = newLabels.merge(labels);
-
-
-//circles = newCircles.merge(circles);
-
-
-
+    
     function dragstarted(d) {
         if (!d3.event.active) simulation.alphaTarget(.9).restart();
         d.fx = d.x;
@@ -1166,14 +945,6 @@ circles.transition()
         d.fx = null;
         d.fy = null;
     }
-
-/*var transitionTime = 500;
-    var t = d3.timer(function (elapsed) {
-        var dt = elapsed / transitionTime;
-        simulation.force('collide').strength(Math.pow(dt, 2) * 0.7);
-        if (dt >= 1.0) t.stop();
-    });*/
-
 
     function ticked() {
         newCircles
@@ -1206,7 +977,6 @@ circles.transition()
 
     function wrap(text, width) {
         text.each(function () {
-            ////console.log(this);
             var text = d3.select(this),
                 words = text.text().split(/\s+/).reverse(),
                 word,
@@ -1257,10 +1027,3 @@ circles.transition()
             growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, self, distChart, demandChart, map, mapdata, map2);
         });
 };
-
-
-
-
-
-
-

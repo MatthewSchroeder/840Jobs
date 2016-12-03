@@ -4,13 +4,6 @@
 
     function init() {
 
-       //var clusterChart = new ClusterChart();
-       //var distChart = new DistChart();
-
-
-
-        //var infoPanel = new InfoPanel();
-
         d3.csv("occdata_all.csv", function (error, occdata) {
             d3.csv("map.csv", function (error, mapdata) {
             var clusterSelection = "Education",
@@ -27,8 +20,7 @@
                 var map2 = new Map2(mapdata, occdata, occSelection);
                 map.update(mapdata, occdata, occSelection);
                 map2.update(mapdata, occdata, occSelection);
-
-           //    var clusterChart = new ClusterChart(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings);
+                
             var distChart = new DistChart(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, demandChart, growthChart, map, mapdata, map2);
             var demandChart = new DemandChart(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, growthChart, map, mapdata, map2);
             var growthChart = new GrowthChart(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, demandChart, map, mapdata, map2);
@@ -38,26 +30,17 @@
             growthChart.update(occdata, clusterSelection, stateSelection, minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, clusterChart, distChart, demandChart, map, mapdata, map2);
             clusterChart.update(occdata, clusterSelection, stateSelection,  minWage, maxWage, minOpenings, maxOpenings, minGrowth, maxGrowth, distChart, demandChart, growthChart, map, mapdata, map2);
 
-
-
             });
 
         });
-
-
-
-
-
     }
-
-
+    
     function Main(){
         if(instance  !== null){
             throw new Error("Cannot instantiate more than one Class");
         }
     }
-
-
+    
     Main.getInstance = function(){
         var self = this
         if(self.instance == null){
